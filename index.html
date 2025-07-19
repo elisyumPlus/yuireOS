@@ -2,14 +2,13 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>Mesai Takip</title>
+  <title>Mesai Takip Sistemi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       background-color: #111827;
       color: #f9fafb;
       font-family: Arial, sans-serif;
-      margin: 0;
       padding: 20px;
     }
 
@@ -63,14 +62,6 @@
       background-color: #2563eb;
     }
 
-    .btn-danger {
-      background-color: #dc2626;
-    }
-
-    .btn-danger:hover {
-      background-color: #b91c1c;
-    }
-
     .records {
       margin-top: 30px;
     }
@@ -80,12 +71,6 @@
       margin-bottom: 8px;
       background-color: #374151;
       border-radius: 6px;
-    }
-
-    .note {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #9ca3af;
     }
 
     .admin-btn-fab {
@@ -155,18 +140,14 @@
     <h1>Mesai Takip Sistemi</h1>
 
     <label for="isim">Adınız Soyadınız</label>
-    <input type="text" id="isim" placeholder="Örnek: Ahmet Yılmaz" />
+    <input type="text" id="isim" placeholder="Örnek: Ayşe Demir" />
 
     <div class="button-container">
       <button class="btn" onclick="mesaiKaydet('giriş')">Mesai Giriş</button>
       <button class="btn" onclick="mesaiKaydet('çıkış')">Mesai Çıkış</button>
-      <button class="btn btn-danger" onclick="gunlukKayitlariTemizle()">Bugünün Kayıtlarını Temizle</button>
     </div>
 
     <div class="records" id="kayitlar"></div>
-    <div class="note">
-      * Kayıtlar günlük olarak sıfırlanır. Admin menüde tüm kayıtlar tutulur.
-    </div>
   </div>
 
   <button class="admin-btn-fab" id="adminBtn">Admin</button>
@@ -188,30 +169,17 @@
     const adminCloseBtn = document.getElementById('adminCloseBtn');
 
     const STORAGE_KEY = 'mesai_kayitlari';
-    const STORAGE_ADMIN_KEY = 'mesai_kayitlari_admin';
-
-    function bugunTarih() {
-      const d = new Date();
-      return d.toISOString().split('T')[0];
-    }
 
     function kayitlariGetir() {
-      let gunlukKayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      let kayitTarih = localStorage.getItem('kayit_tarih');
-
-      if (kayitTarih !== bugunTarih()) {
-        gunlukKayitlar = [];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(gunlukKayitlar));
-        localStorage.setItem('kayit_tarih', bugunTarih());
-      }
-
+      const kayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
       kayitlarDiv.innerHTML = '';
-      if (gunlukKayitlar.length === 0) {
-        kayitlarDiv.innerHTML = '<p style="color:#9ca3af;text-align:center;">Bugün kayıt yok.</p>';
+
+      if (kayitlar.length === 0) {
+        kayitlarDiv.innerHTML = '<p style="color:#9ca3af;text-align:center;">Henüz kayıt yok.</p>';
         return;
       }
 
-      gunlukKayitlar.forEach(k => {
+      kayitlar.forEach(k => {
         const div = document.createElement('div');
         div.classList.add('record');
         div.textContent = `${k.tarih} ${k.saat} - ${k.isim} ${k.tip === 'giriş' ? 'girdi' : 'çıktı'}`;
@@ -227,28 +195,21 @@
       }
 
       const now = new Date();
-      const tarih = bugunTarih();
+      const tarih = now.toISOString().split('T')[0];
       const saat = now.toTimeString().split(' ')[0];
 
-      let gunlukKayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      let adminKayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
+      const kayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-      const kayit = { isim, tip, tarih, saat };
+      kayitlar.push({ isim, tip, tarih, saat });
 
-      gunlukKayitlar.push(kayit);
-      adminKayitlar.push(kayit);
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(gunlukKayitlar));
-      localStorage.setItem(STORAGE_ADMIN_KEY, JSON.stringify(adminKayitlar));
-      localStorage.setItem('kayit_tarih', bugunTarih());
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(kayitlar));
 
       kayitlariGetir();
     }
 
-    function gunlukKayitlariTemizle() {
-      if (confirm("Bugünün kayıtlarını silmek istediğinize emin misiniz?")) {
+    function tumuSil() {
+      if (confirm('Tüm kayıtları silmek istediğinize emin misiniz?')) {
         localStorage.removeItem(STORAGE_KEY);
-        localStorage.setItem('kayit_tarih', bugunTarih());
         kayitlariGetir();
       }
     }
@@ -265,16 +226,6 @@
     adminCloseBtn.addEventListener('click', () => {
       adminModalBg.style.display = 'none';
     });
-
-    function tumuSil() {
-      if (confirm('Tüm kayıtları silmek istediğinize emin misiniz?')) {
-        localStorage.removeItem(STORAGE_ADMIN_KEY);
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem('kayit_tarih');
-        kayitlariGetir();
-        alert('Tüm kayıtlar silindi.');
-      }
-    }
 
     window.onload = kayitlariGetir;
   </script>
