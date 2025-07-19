@@ -192,7 +192,6 @@
     </div>
     <div class="msg" id="msg"></div>
   </div>
-
   <!-- WhatsApp Tuşu -->
   <a href="https://wa.me/6283871500278" target="_blank" class="whatsapp-btn" title="WhatsApp ile iletişime geç">
     <span class="whatsapp-icon">
@@ -207,13 +206,13 @@
     let pw = "";
     function addNum(n) {
       if (pw.length < 4) pw += n;
-      document.getElementById("pwdisplay").value = pw;
+      document.getElementById("pwdisplay").value = "*".repeat(pw.length);
       document.getElementById("msg").textContent = "";
       document.getElementById("msg").classList.remove("success");
     }
     function clearPw() {
       pw = "";
-      document.getElementById("pwdisplay").value = pw;
+      document.getElementById("pwdisplay").value = "";
       document.getElementById("msg").textContent = "";
       document.getElementById("msg").classList.remove("success");
     }
