@@ -68,8 +68,7 @@
     tbody tr:hover {
       background: #3949ab33;
     }
-    .btn-delete {
-      background: #e24343;
+    .btn-delete, .btn-edit, .btn-save, .btn-cancel {
       color: #fff;
       border: none;
       padding: 6px 12px;
@@ -77,9 +76,32 @@
       cursor: pointer;
       font-weight: 600;
       transition: background 0.3s;
+      margin-right: 6px;
+      user-select: none;
+    }
+    .btn-delete {
+      background: #e24343;
     }
     .btn-delete:hover {
       background: #b91c1c;
+    }
+    .btn-edit {
+      background: #2563eb;
+    }
+    .btn-edit:hover {
+      background: #194bb5;
+    }
+    .btn-save {
+      background: #22c55e;
+    }
+    .btn-save:hover {
+      background: #16a34a;
+    }
+    .btn-cancel {
+      background: #6b7280;
+    }
+    .btn-cancel:hover {
+      background: #4b5563;
     }
     .no-records {
       text-align: center;
@@ -101,6 +123,24 @@
     }
     #clearAllBtn:hover {
       background: #b91c1c;
+    }
+    input.edit-input {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #2563eb;
+      background: #1f2230;
+      color: #e5e7eb;
+    }
+    select.edit-input {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #2563eb;
+      background: #1f2230;
+      color: #e5e7eb;
     }
   </style>
 </head>
@@ -136,24 +176,21 @@
   const clearAllBtn = document.getElementById('clearAllBtn');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // Sayfa açılırken şifre sor, doğru değilse yönlendir (login/index sayfasına)
   function adminLogin() {
     const pass = prompt('Admin şifresi:');
     if (pass !== 'admin123') {
       alert('Yanlış şifre! Ana sayfaya yönlendiriliyorsunuz.');
-      window.location.href = 'index.html'; // Giriş sayfası olarak index
+      window.location.href = 'index.html';
     } else {
       loadRecords();
     }
   }
 
-  // Kayıtları yükle ve tabloya yazdır
   function loadRecords() {
     const kayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
     displayRecords(kayitlar);
   }
 
-  // Tabloya yazdır
   function displayRecords(kayitlar) {
     recordsTableBody.innerHTML = '';
     if (kayitlar.length === 0) {
@@ -165,41 +202,160 @@
     kayitlar.forEach((k, index) => {
       const tr = document.createElement('tr');
 
+      // İsim hücresi
       const isimTd = document.createElement('td');
       isimTd.textContent = k.isim;
       tr.appendChild(isimTd);
 
+      // Tip hücresi
       const tipTd = document.createElement('td');
       tipTd.textContent = k.tip === 'giriş' ? 'Giriş' : 'Çıkış';
       tr.appendChild(tipTd);
 
+      // Tarih hücresi
       const tarihTd = document.createElement('td');
       tarihTd.textContent = k.tarih;
       tr.appendChild(tarihTd);
 
+      // Saat hücresi
       const saatTd = document.createElement('td');
       saatTd.textContent = k.saat;
       tr.appendChild(saatTd);
 
+      // İşlem hücresi: Sil ve Düzenle butonları
       const islemTd = document.createElement('td');
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Düzenle';
+      editBtn.className = 'btn-edit';
+      editBtn.onclick = () => startEdit(tr, k, index);
+
       const delBtn = document.createElement('button');
       delBtn.textContent = 'Sil';
       delBtn.className = 'btn-delete';
       delBtn.onclick = () => {
-        if(confirm(`${k.isim} adlı kullanıcının bu kaydını silmek istediğinize emin misiniz?`)) {
+        if (confirm(`${k.isim} adlı kullanıcının bu kaydını silmek istediğinize emin misiniz?`)) {
+          const kayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
           kayitlar.splice(index, 1);
           localStorage.setItem(STORAGE_ADMIN_KEY, JSON.stringify(kayitlar));
           displayRecords(kayitlar);
         }
       };
+
+      islemTd.appendChild(editBtn);
       islemTd.appendChild(delBtn);
+
       tr.appendChild(islemTd);
 
       recordsTableBody.appendChild(tr);
     });
   }
 
-  // Arama fonksiyonu (isim ve tarih ara)
+  // Düzenleme başlatma fonksiyonu
+  function startEdit(tr, kayit, index) {
+    // Hücreleri editable inputlara dönüştür
+    tr.innerHTML = '';
+
+    // İsim input
+    const isimTd = document.createElement('td');
+    const isimInput = document.createElement('input');
+    isimInput.type = 'text';
+    isimInput.value = kayit.isim;
+    isimInput.className = 'edit-input';
+    isimTd.appendChild(isimInput);
+    tr.appendChild(isimTd);
+
+    // Tip select
+    const tipTd = document.createElement('td');
+    const tipSelect = document.createElement('select');
+    tipSelect.className = 'edit-input';
+    const girisOption = document.createElement('option');
+    girisOption.value = 'giriş';
+    girisOption.textContent = 'Giriş';
+    const cikisOption = document.createElement('option');
+    cikisOption.value = 'çıkış';
+    cikisOption.textContent = 'Çıkış';
+    tipSelect.appendChild(girisOption);
+    tipSelect.appendChild(cikisOption);
+    tipSelect.value = kayit.tip;
+    tipTd.appendChild(tipSelect);
+    tr.appendChild(tipTd);
+
+    // Tarih input (date tipi)
+    const tarihTd = document.createElement('td');
+    const tarihInput = document.createElement('input');
+    tarihInput.type = 'date';
+    // Tarih formatı yyyy-mm-dd değilse çevirelim
+    const dateParts = kayit.tarih.split('.');
+    if(dateParts.length === 3){
+      tarihInput.value = `${dateParts[2]}-${dateParts[1].padStart(2,'0')}-${dateParts[0].padStart(2,'0')}`;
+    } else {
+      tarihInput.value = kayit.tarih; // fallback
+    }
+    tarihInput.className = 'edit-input';
+    tarihTd.appendChild(tarihInput);
+    tr.appendChild(tarihTd);
+
+    // Saat input (time tipi)
+    const saatTd = document.createElement('td');
+    const saatInput = document.createElement('input');
+    saatInput.type = 'time';
+    saatInput.value = kayit.saat;
+    saatInput.className = 'edit-input';
+    saatTd.appendChild(saatInput);
+    tr.appendChild(saatTd);
+
+    // İşlem butonları: Kaydet ve İptal
+    const islemTd = document.createElement('td');
+
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = 'Kaydet';
+    saveBtn.className = 'btn-save';
+    saveBtn.onclick = () => {
+      // Yeni değerleri al ve kaydet
+      const yeniIsim = isimInput.value.trim();
+      const yeniTip = tipSelect.value;
+      const yeniTarihRaw = tarihInput.value;
+      const yeniSaat = saatInput.value;
+
+      if (!yeniIsim || !yeniTarihRaw || !yeniSaat) {
+        alert('Lütfen tüm alanları doldurun!');
+        return;
+      }
+
+      // Tarihi dd.mm.yyyy formatına çevir
+      const dt = new Date(yeniTarihRaw);
+      if (isNaN(dt)) {
+        alert('Geçerli bir tarih girin!');
+        return;
+      }
+      const yeniTarih = `${dt.getDate().toString().padStart(2,'0')}.${(dt.getMonth()+1).toString().padStart(2,'0')}.${dt.getFullYear()}`;
+
+      // Kaydı güncelle
+      const kayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
+      kayitlar[index] = {
+        isim: yeniIsim,
+        tip: yeniTip,
+        tarih: yeniTarih,
+        saat: yeniSaat
+      };
+      localStorage.setItem(STORAGE_ADMIN_KEY, JSON.stringify(kayitlar));
+      displayRecords(kayitlar);
+    };
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'İptal';
+    cancelBtn.className = 'btn-cancel';
+    cancelBtn.onclick = () => {
+      // Düzenlemeyi iptal et ve eski hali göster
+      loadRecords();
+    };
+
+    islemTd.appendChild(saveBtn);
+    islemTd.appendChild(cancelBtn);
+    tr.appendChild(islemTd);
+  }
+
   searchInput.addEventListener('input', () => {
     const query = searchInput.value.toLowerCase();
     const kayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
@@ -209,7 +365,6 @@
     displayRecords(filtered);
   });
 
-  // Tüm kayıtları sil
   clearAllBtn.addEventListener('click', () => {
     if (confirm('Tüm kayıtları silmek istediğinize emin misiniz?')) {
       localStorage.removeItem(STORAGE_ADMIN_KEY);
@@ -217,12 +372,10 @@
     }
   });
 
-  // Çıkış yap (index.html'ye yönlendir)
   logoutBtn.addEventListener('click', () => {
     window.location.href = 'index.html';
   });
 
-  // Admin paneli açılırken şifre kontrolü
   window.onload = adminLogin;
 </script>
 
