@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Mesai Takip | yuireOS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       background: #22232a;
@@ -43,7 +43,8 @@
       text-align: left;
       margin-left: 8px;
     }
-    input[type="text"] {
+    input[type="text"],
+    input[type="password"] {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
@@ -56,17 +57,11 @@
       outline: none;
       transition: box-shadow 0.2s;
     }
-    input[type="text"]:focus {
+    input[type="text"]:focus,
+    input[type="password"]:focus {
       box-shadow: 0 0 12px #2563eb99;
     }
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 22px;
-    }
     .btn {
-      flex: 1;
       background: #fff;
       color: #22232a;
       padding: 12px 0;
@@ -77,6 +72,8 @@
       font-weight: 500;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
       transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+      width: 100%;
+      margin-bottom: 16px;
     }
     .btn:hover,
     .btn:active,
@@ -94,8 +91,6 @@
       margin-top: 16px;
       min-height: 48px;
       text-align: left;
-      max-height: 180px;
-      overflow-y: auto;
     }
     .record {
       font-size: 1.06rem;
@@ -154,7 +149,7 @@
       font-size: 0.95rem;
       margin-top: 16px;
     }
-    /* Sağ altta admin tuşu - koyu kırmızı dikdörtgen, yuvarlak kenarlı */
+    /* Admin butonu */
     .admin-btn-fab {
       position: fixed;
       right: 30px;
@@ -181,279 +176,209 @@
       background: #82001A;
       box-shadow: 0 0 18px 6px #B1002466;
     }
-    /* Şifre modalı */
-    .modal-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #000a;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 101;
-    }
-    .modal {
-      background: #232339;
-      border-radius: 13px;
-      box-shadow: 0 2px 18px #0006;
-      padding: 28px 28px 18px 28px;
-      width: 320px;
-      max-width: 95vw;
-      color: #e5e7eb;
-      text-align: center;
-    }
-    .modal label {
-      text-align: left;
-      font-size: 1rem;
-      color: #b3b3c2;
-      display: block;
-      margin-bottom: 9px;
-    }
-    .modal input[type="password"] {
+    /* Şifre ekranı */
+    #loginContainer {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      background: #22232a;
-      color: #fff;
-      font-size: 1.06rem;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px #2563eb22;
-      outline: none;
-      transition: box-shadow 0.2s;
     }
-    .modal input[type="password"]:focus {
-      box-shadow: 0 0 12px #2563eb99;
-    }
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-    .modal-btn {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 18px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s;
-    }
-    .modal-btn.cancel {
-      background: #e24343;
-    }
-    .modal-btn.cancel:hover {
-      background: #b91c1c;
-    }
-    .modal-btn:hover {
-      background: #1740a1;
-    }
-    .admin-modal-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #000a;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 102;
-    }
-    .admin-modal {
-      background: #1a1b21;
-      color: #e5e7eb;
-      border-radius: 14px;
-      box-shadow: 0 2px 28px #0009;
-      padding: 28px 28px 18px 28px;
-      min-width: 320px;
-      max-width: 95vw;
-      text-align: left;
-      position: relative;
-    }
-    .admin-title {
-      color: #e2c243;
-      font-size: 1.15rem;
-      font-weight: bold;
-      margin-bottom: 11px;
-    }
-    .admin-btn {
-      background: #e24343;
-      color: #fff;
-      border: none;
-      border-radius: 9px;
-      padding: 10px 18px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 2px 8px #e2434322;
-      transition: background 0.2s, box-shadow 0.2s;
-      margin-bottom: 9px;
-    }
-    .admin-btn:hover,
-    .admin-btn:active {
-      background: #b91c1c;
-      box-shadow: 0 0 18px 4px #e24343, 0 2px 18px #e2434322;
-      outline: none;
-    }
-    .close-admin {
-      position: absolute;
-      top: 9px;
-      right: 11px;
-      font-size: 1.3rem;
+    #errorMsg {
       color: #e24343;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      outline: none;
-    }
-    .close-admin:hover {
-      color: #fff;
-      background: #e24343;
-      border-radius: 50%;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <span class="brand">yuireOS</span>
-    <label for="isim">İsminiz:</label>
-    <input type="text" id="isim" placeholder="Adınızı girin" />
-    <div class="actions">
-      <button class="btn" onclick="mesaiKaydet('giriş')">Mesai Giriş</button>
-      <button class="btn" onclick="mesaiKaydet('çıkış')">Mesai Çıkış</button>
+
+    <!-- Şifre Giriş Ekranı -->
+    <div id="loginContainer">
+      <label for="adminPassword">Şifre:</label>
+      <input type="password" id="adminPassword" placeholder="Şifreyi girin" />
+      <button class="btn" id="loginBtn">Giriş Yap</button>
+      <div id="errorMsg">Şifre yanlış!</div>
     </div>
 
-    <div class="records" id="kayitlar"></div>
-    <div class="note">
-      * Kayıtlar günlük olarak sıfırlanır. Admin menüde tüm kayıtlar tutulur.
+    <!-- Mesai Takip Sistemi (Başlangıçta gizli) -->
+    <div id="mesaiContainer" style="display:none;">
+      <label for="isim">İsminiz:</label>
+      <input type="text" id="isim" placeholder="Adınızı girin" />
+      <div class="actions" style="display:flex; gap:12px; margin-bottom:22px;">
+        <button class="btn" onclick="mesaiKaydet('giriş')" style="flex:1;">Mesai Giriş</button>
+        <button class="btn" onclick="mesaiKaydet('çıkış')" style="flex:1;">Mesai Çıkış</button>
+      </div>
+      <div class="records" id="records"></div>
+      <div class="dashboard">
+        <div class="dashboard-title">Kim Ne Kadar Çalıştı?</div>
+        <div id="dashboardRows"></div>
+      </div>
+      <div class="note">Kayıtlar cihazda saklanır, sayfa yenilense bile kalır.</div>
     </div>
+
   </div>
 
-  <!-- Admin butonu -->
-  <button class="admin-btn-fab" id="adminBtn">Admin</button>
-
-  <!-- Admin Modal -->
-  <div class="admin-modal-bg" id="adminModalBg">
-    <div class="admin-modal">
-      <button class="close-admin" id="adminCloseBtn">&times;</button>
-      <div class="admin-title">Admin Paneli</div>
-      <button class="admin-btn" onclick="tumuSil()">Tüm Kayıtları Sil</button>
-      <button class="admin-btn" onclick="adminModalBg.style.display='none'">Kapat</button>
-    </div>
-  </div>
+  <!-- Admin Menüsü Butonu (Başlangıçta gizli) -->
+  <button class="admin-btn-fab" id="adminBtn" style="display:none;" title="Admin Menü" onclick="goAdminPage()">
+    Admin Menü
+  </button>
 
   <script>
-    const isimInput = document.getElementById('isim');
-    const kayitlarDiv = document.getElementById('kayitlar');
-    const adminBtn = document.getElementById('adminBtn');
-    const adminModalBg = document.getElementById('adminModalBg');
-    const adminCloseBtn = document.getElementById('adminCloseBtn');
+    const ADMIN_PASSWORD = "1234"; // İstersen buraya şifreyi değiştir
+    const loginContainer = document.getElementById("loginContainer");
+    const mesaiContainer = document.getElementById("mesaiContainer");
+    const adminBtn = document.getElementById("adminBtn");
+    const errorMsg = document.getElementById("errorMsg");
 
-    // Kayıtları günlük olarak (bugün) saklamak için localStorage'da tarih kontrolü yapalım
-    const STORAGE_KEY = 'mesai_kayitlari';
-    const STORAGE_ADMIN_KEY = 'mesai_kayitlari_admin';
-
-    // Bugünün tarihi string (YYYY-MM-DD)
-    function bugunTarih() {
-      const d = new Date();
-      return d.toISOString().split('T')[0];
-    }
-
-    // Kayıtları alırken tarih kontrolü yap, eğer tarih değişmişse sadece günlük kayıtları temizle (admin kayıt kalır)
-    function kayitlariGetir() {
-      let tumKayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
-      let gunlukKayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
-      // Eğer günlük kayıtlar bugünün değilse sıfırla
-      let kayitTarih = localStorage.getItem('kayit_tarih');
-      if (kayitTarih !== bugunTarih()) {
-        gunlukKayitlar = [];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(gunlukKayitlar));
-        localStorage.setItem('kayit_tarih', bugunTarih());
-      }
-
-      // Günlük kayıtları göster
-      kayitlarDiv.innerHTML = '';
-      if (gunlukKayitlar.length === 0) {
-        kayitlarDiv.innerHTML = '<p style="color:#666;text-align:center;">Bugün kayıt yok.</p>';
-        return;
-      }
-
-      gunlukKayitlar.forEach(k => {
-        const div = document.createElement('div');
-        div.classList.add('record');
-        div.textContent = `${k.tarih} ${k.saat} - ${k.isim} ${k.tip === 'giriş' ? 'girdi' : 'çıktı'}`;
-        kayitlarDiv.appendChild(div);
+    // Mesai kayıtları
+    let kayitlar = [];
+    if (localStorage.getItem("mesaiKayitlar")) {
+      kayitlar = JSON.parse(localStorage.getItem("mesaiKayitlar"));
+      kayitlar.forEach(k => {
+        k.dateObj = new Date(k.dateObj);
       });
     }
 
-    // Mesai kaydetme fonksiyonu
+    // Tarih Saat formatlama
+    function pad(n) {
+      return n < 10 ? "0" + n : n;
+    }
+    function tarihSaatObj() {
+      const d = new Date();
+      const tarih =
+        pad(d.getDate()) + "." + pad(d.getMonth() + 1) + "." + d.getFullYear();
+      const saat = pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+      return { tarih, saat, dateObj: d };
+    }
+
+    // Mesai kaydet fonksiyonu
     function mesaiKaydet(tip) {
-      const isim = isimInput.value.trim();
+      const isim = document.getElementById("isim").value.trim();
       if (!isim) {
-        alert('Lütfen isminizi girin!');
+        alert("Lütfen isminizi giriniz!");
+        return;
+      }
+      const ts = tarihSaatObj();
+      kayitlar.push({
+        isim,
+        tip,
+        time: ts.saat,
+        date: ts.tarih,
+        dateObj: ts.dateObj,
+      });
+      kayitlariKaydet();
+      guncelleKayitlar();
+      guncelleDashboard();
+    }
+
+    // Kayıtları localStorage'a kaydet
+    function kayitlariKaydet() {
+      localStorage.setItem("mesaiKayitlar", JSON.stringify(kayitlar));
+    }
+
+    // Kayıtları güncelle
+    function guncelleKayitlar() {
+      const recordsDiv = document.getElementById("records");
+      if (kayitlar.length === 0) {
+        recordsDiv.innerHTML = '<span style="color:#b3b3c2;">Henüz kayıt yok.</span>';
+        return;
+      }
+      recordsDiv.innerHTML = kayitlar
+        .map(
+          (r) =>
+            `<div class="record">
+            <span class="name">${r.isim}</span>
+            <span class="type">${r.tip === "giriş" ? "Giriş Yaptı" : "Çıkış Yaptı"}</span>
+            <span class="time">${r.time}</span>
+            <span class="date">${r.date}</span>
+          </div>`
+        )
+        .join("");
+    }
+
+    // Dashboard güncelle
+    function guncelleDashboard() {
+      const dashboard = document.getElementById("dashboardRows");
+      if (kayitlar.length === 0) {
+        dashboard.innerHTML = '<span style="color:#b3b3c2;">Henüz kayıt yok.</span>';
         return;
       }
 
-      const now = new Date();
-      const tarih = now.toISOString().split('T')[0];
-      const saat = now.toTimeString().split(' ')[0];
+      // Her isim için giriş-çıkış saatlerini hesapla, toplam çalışma süresi hesapla (basit)
+      const calismaSaatleri = {};
 
-      // Günlük kayıtlar
-      let gunlukKayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      // Kayıtları isimlere göre gruplandır
+      const isimler = [...new Set(kayitlar.map(k => k.isim))];
 
-      // Admin kayıtları (tüm zaman)
-      let adminKayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
+      isimler.forEach(isim => {
+        const kisininKayitlari = kayitlar.filter(k => k.isim === isim);
 
-      const kayit = { isim, tip, tarih, saat };
+        // Saat farklarını toplamak için
+        let toplamMs = 0;
+        let sonGirisZamani = null;
 
-      // Günlük kayıt ekle
-      gunlukKayitlar.push(kayit);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(gunlukKayitlar));
+        kisininKayitlari.forEach(kayit => {
+          if (kayit.tip === "giriş") {
+            sonGirisZamani = kayit.dateObj;
+          } else if (kayit.tip === "çıkış" && sonGirisZamani) {
+            toplamMs += (kayit.dateObj - sonGirisZamani);
+            sonGirisZamani = null;
+          }
+        });
 
-      // Admin kayıt ekle
-      adminKayitlar.push(kayit);
-      localStorage.setItem(STORAGE_ADMIN_KEY, JSON.stringify(adminKayitlar));
+        const toplamSaat = (toplamMs / (1000 * 60 * 60)).toFixed(2);
+        calismaSaatleri[isim] = toplamSaat;
+      });
 
-      localStorage.setItem('kayit_tarih', bugunTarih());
-
-      kayitlariGetir();
-    }
-
-    // Admin butonuna tıklayınca modal açılır
-    adminBtn.addEventListener('click', () => {
-      const sifre = prompt('Admin şifresi nedir?');
-      if (sifre === 'admin123') {  // Şifreyi istediğin gibi değiştir
-        adminModalBg.style.display = 'flex';
-      } else if (sifre !== null) {
-        alert('Yanlış şifre!');
-      }
-    });
-
-    adminCloseBtn.addEventListener('click', () => {
-      adminModalBg.style.display = 'none';
-    });
-
-    // Admin panelden tüm kayıtları silme fonksiyonu
-    function tumuSil() {
-      if (confirm('Tüm kayıtları silmek istediğinize emin misiniz?')) {
-        localStorage.removeItem(STORAGE_ADMIN_KEY);
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem('kayit_tarih');
-        kayitlariGetir();
-        alert('Tüm kayıtlar silindi.');
+      dashboard.innerHTML = "";
+      for (const [isim, saat] of Object.entries(calismaSaatleri)) {
+        dashboard.innerHTML += `<div class="dashboard-row">
+          <div class="dashboard-name">${isim}</div>
+          <div class="dashboard-total">${saat} saat</div>
+        </div>`;
       }
     }
 
-    // Sayfa yüklenince kayıtları getir
+    // Admin sayfasına git
+    function goAdminPage() {
+      window.location.href = "admin.html";
+    }
+
+    // Giriş yapıldı mı kontrolü (sessionStorage ile)
+    function isLoggedIn() {
+      return sessionStorage.getItem("loggedIn") === "true";
+    }
+
+    // Giriş yapılınca gösterimleri ayarla
+    function gosterGizle() {
+      if (isLoggedIn()) {
+        loginContainer.style.display = "none";
+        mesaiContainer.style.display = "block";
+        adminBtn.style.display = "flex";
+        guncelleKayitlar();
+        guncelleDashboard();
+      } else {
+        loginContainer.style.display = "block";
+        mesaiContainer.style.display = "none";
+        adminBtn.style.display = "none";
+      }
+    }
+
+    // Giriş butonuna basılınca kontrol
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const sifre = document.getElementById("adminPassword").value.trim();
+      if (sifre === ADMIN_PASSWORD) {
+        sessionStorage.setItem("loggedIn", "true");
+        errorMsg.style.display = "none";
+        gosterGizle();
+      } else {
+        errorMsg.style.display = "block";
+      }
+    });
+
+    // Sayfa açılırken kontrol et
     window.onload = () => {
-      kayitlariGetir();
+      gosterGizle();
     };
   </script>
 </body>
