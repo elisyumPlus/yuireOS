@@ -1,460 +1,188 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Mesai Takip | yuireOS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      background: #22232a;
-      color: #e5e7eb;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      max-width: 400px;
-      width: 100%;
-      margin: 0 auto;
-      background: #2c2d34;
-      border-radius: 18px;
-      box-shadow: 0 4px 28px #0006;
-      padding: 32px 24px;
-      text-align: center;
-      position: relative;
-    }
-    .brand {
-      font-size: 2rem;
-      color: #2563eb;
-      font-weight: bold;
-      letter-spacing: 0.03em;
-      margin-bottom: 18px;
-      display: block;
-    }
-    label {
-      color: #b3b3c2;
-      font-size: 1.09rem;
-      display: block;
-      margin-bottom: 8px;
-      text-align: left;
-      margin-left: 8px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      background: #22232a;
-      color: #fff;
-      font-size: 1.06rem;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px #2563eb22;
-      outline: none;
-      transition: box-shadow 0.2s;
-    }
-    input[type="text"]:focus {
-      box-shadow: 0 0 12px #2563eb99;
-    }
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-    .btn {
-      flex: 1;
-      background: #fff;
-      color: #22232a;
-      padding: 12px 0;
-      border: none;
-      border-radius: 9px;
-      cursor: pointer;
-      font-size: 1.06rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-      transition: box-shadow 0.2s, background 0.2s, color 0.2s;
-    }
-    .btn:hover,
-    .btn:active,
-    .btn:focus {
-      box-shadow: 0 0 18px 4px #fff, 0 2px 18px rgba(255, 255, 255, 0.2);
-      background: #f7f7f7;
-      color: #1a1a1a;
-      outline: none;
-    }
-    .records {
-      background: #232339;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px #0002;
-      padding: 15px 8px 7px 8px;
-      margin-top: 16px;
-      min-height: 48px;
-      text-align: left;
-      max-height: 180px;
-      overflow-y: auto;
-    }
-    .record {
-      font-size: 1.06rem;
-      margin-bottom: 7px;
-      color: #e5e7eb;
-    }
-    .record .time {
-      color: #22c55e;
-      margin-left: 7px;
-    }
-    .record .type {
-      font-weight: 500;
-      margin-left: 6px;
-    }
-    .record .name {
-      color: #2563eb;
-      font-weight: bold;
-      margin-right: 7px;
-    }
-    .record .date {
-      color: #b3b3c2;
-      margin-left: 8px;
-      font-size: 0.98rem;
-    }
-    .dashboard {
-      background: #22232a;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px #2563eb22;
-      padding: 14px 12px 10px 12px;
-      margin-top: 16px;
-      text-align: left;
-    }
-    .dashboard-title {
-      color: #2563eb;
-      font-size: 1.13rem;
-      font-weight: bold;
-      margin-bottom: 9px;
-    }
-    .dashboard-row {
-      font-size: 1.06rem;
-      margin-bottom: 7px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .dashboard-name {
-      font-weight: bold;
-      color: #e5e7eb;
-    }
-    .dashboard-total {
-      color: #22c55e;
-      font-weight: 500;
-    }
-    .note {
-      color: #b3b3c2;
-      font-size: 0.95rem;
-      margin-top: 16px;
-    }
-    /* Sağ altta admin tuşu - koyu kırmızı dikdörtgen, yuvarlak kenarlı */
-    .admin-btn-fab {
-      position: fixed;
-      right: 30px;
-      bottom: 30px;
-      background: #B10024;
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      width: 130px;
-      height: 54px;
-      font-size: 1.13rem;
-      font-weight: bold;
-      box-shadow: 0 3px 18px #B1002466;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s, box-shadow 0.2s;
-      z-index: 100;
-      outline: none;
-      letter-spacing: 0.03em;
-    }
-    .admin-btn-fab:hover {
-      background: #82001A;
-      box-shadow: 0 0 18px 6px #B1002466;
-    }
-    /* Şifre modalı */
-    .modal-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #000a;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 101;
-    }
-    .modal {
-      background: #232339;
-      border-radius: 13px;
-      box-shadow: 0 2px 18px #0006;
-      padding: 28px 28px 18px 28px;
-      width: 320px;
-      max-width: 95vw;
-      color: #e5e7eb;
-      text-align: center;
-    }
-    .modal label {
-      text-align: left;
-      font-size: 1rem;
-      color: #b3b3c2;
-      display: block;
-      margin-bottom: 9px;
-    }
-    .modal input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      background: #22232a;
-      color: #fff;
-      font-size: 1.06rem;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px #2563eb22;
-      outline: none;
-      transition: box-shadow 0.2s;
-    }
-    .modal input[type="password"]:focus {
-      box-shadow: 0 0 12px #2563eb99;
-    }
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-    .modal-btn {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 18px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s;
-    }
-    .modal-btn.cancel {
-      background: #e24343;
-    }
-    .modal-btn.cancel:hover {
-      background: #b91c1c;
-    }
-    .modal-btn:hover {
-      background: #1740a1;
-    }
-    .admin-modal-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #000a;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 102;
-    }
-    .admin-modal {
-      background: #1a1b21;
-      color: #e5e7eb;
-      border-radius: 14px;
-      box-shadow: 0 2px 28px #0009;
-      padding: 28px 28px 18px 28px;
-      min-width: 320px;
-      max-width: 95vw;
-      text-align: left;
-      position: relative;
-    }
-    .admin-title {
-      color: #e2c243;
-      font-size: 1.15rem;
-      font-weight: bold;
-      margin-bottom: 11px;
-    }
-    .admin-btn {
-      background: #e24343;
-      color: #fff;
-      border: none;
-      border-radius: 9px;
-      padding: 10px 18px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 2px 8px #e2434322;
-      transition: background 0.2s, box-shadow 0.2s;
-      margin-bottom: 9px;
-    }
-    .admin-btn:hover,
-    .admin-btn:active {
-      background: #b91c1c;
-      box-shadow: 0 0 18px 4px #e24343, 0 2px 18px #e2434322;
-      outline: none;
-    }
-    .close-admin {
-      position: absolute;
-      top: 9px;
-      right: 11px;
-      font-size: 1.3rem;
-      color: #e24343;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      outline: none;
-    }
-    .close-admin:hover {
-      color: #fff;
-      background: #e24343;
-      border-radius: 50%;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Günlük Mesai Takip</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f7f8;
+    color: #333;
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h2 {
+    text-align: center;
+    color: #007BFF;
+    margin-bottom: 30px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  button {
+    width: 48%;
+    padding: 12px 0;
+    margin: 5px 1% 20px 1%;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  th {
+    background-color: #007BFF;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  tbody tr:hover {
+    background-color: #f1f9ff;
+  }
+  td:first-child {
+    font-weight: 600;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <span class="brand">yuireOS</span>
-    <label for="isim">İsminiz:</label>
-    <input type="text" id="isim" placeholder="Adınızı girin" />
-    <div class="actions">
-      <button class="btn" onclick="mesaiKaydet('giriş')">Mesai Giriş</button>
-      <button class="btn" onclick="mesaiKaydet('çıkış')">Mesai Çıkış</button>
-    </div>
 
-    <div class="records" id="kayitlar"></div>
-    <div class="note">
-      * Kayıtlar günlük olarak sıfırlanır. Admin menüde tüm kayıtlar tutulur.
-    </div>
-  </div>
+<h2>Günlük Mesai Takip Sistemi</h2>
 
-  <!-- Admin butonu -->
-  <button class="admin-btn-fab" id="adminBtn">Admin</button>
+<input type="text" id="isim" placeholder="İsminizi girin" />
+<button onclick="mesaiKaydet('giris')">Giriş</button>
+<button onclick="mesaiKaydet('cikis')">Çıkış</button>
 
-  <!-- Admin Modal -->
-  <div class="admin-modal-bg" id="adminModalBg">
-    <div class="admin-modal">
-      <button class="close-admin" id="adminCloseBtn">&times;</button>
-      <div class="admin-title">Admin Paneli</div>
-      <button class="admin-btn" onclick="tumuSil()">Tüm Kayıtları Sil</button>
-      <button class="admin-btn" onclick="adminModalBg.style.display='none'">Kapat</button>
-    </div>
-  </div>
+<table id="kayitlarTable">
+  <thead>
+    <tr>
+      <th>İsim</th>
+      <th>İşlem</th>
+      <th>Saat</th>
+      <th>Tarih</th>
+    </tr>
+  </thead>
+  <tbody id="kayitlarBody"></tbody>
+</table>
 
-  <script>
-    const isimInput = document.getElementById('isim');
-    const kayitlarDiv = document.getElementById('kayitlar');
-    const adminBtn = document.getElementById('adminBtn');
-    const adminModalBg = document.getElementById('adminModalBg');
-    const adminCloseBtn = document.getElementById('adminCloseBtn');
+<script>
+// Tarih ve saat objesi döndürür
+function tarihSaatObj() {
+  const dateObj = new Date();
+  const tarih = dateObj.toLocaleDateString('tr-TR');
+  const saat = dateObj.toLocaleTimeString('tr-TR');
+  return { dateObj, tarih, saat };
+}
 
-    // Kayıtları günlük olarak (bugün) saklamak için localStorage'da tarih kontrolü yapalım
-    const STORAGE_KEY = 'mesai_kayitlari';
-    const STORAGE_ADMIN_KEY = 'mesai_kayitlari_admin';
+function getTodayDateStr() {
+  const d = new Date();
+  const pad = n => n < 10 ? '0' + n : n;
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
 
-    // Bugünün tarihi string (YYYY-MM-DD)
-    function bugunTarih() {
-      const d = new Date();
-      return d.toISOString().split('T')[0];
+let gunlukKayitlar = [];
+
+function loadGunlukKayitlar() {
+  let saved = localStorage.getItem("gunlukMesaiKayitlar");
+  if (!saved) return [];
+
+  let parsed = JSON.parse(saved);
+
+  if (parsed.length > 0) {
+    let firstDateObj = new Date(parsed[0].dateObj);
+    let firstDateStr = firstDateObj.getFullYear() + "-" 
+                     + (firstDateObj.getMonth()+1 < 10 ? '0' : '') + (firstDateObj.getMonth()+1) + "-"
+                     + (firstDateObj.getDate() < 10 ? '0' : '') + firstDateObj.getDate();
+
+    if (firstDateStr !== getTodayDateStr()) {
+      localStorage.removeItem("gunlukMesaiKayitlar");
+      return [];
     }
+  }
 
-    // Kayıtları alırken tarih kontrolü yap, eğer tarih değişmişse sadece günlük kayıtları temizle (admin kayıt kalır)
-    function kayitlariGetir() {
-      let tumKayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
-      let gunlukKayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  // Date objesini düzelt
+  parsed.forEach(k => { k.dateObj = new Date(k.dateObj); });
+  return parsed;
+}
 
-      // Eğer günlük kayıtlar bugünün değilse sıfırla
-      let kayitTarih = localStorage.getItem('kayit_tarih');
-      if (kayitTarih !== bugunTarih()) {
-        gunlukKayitlar = [];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(gunlukKayitlar));
-        localStorage.setItem('kayit_tarih', bugunTarih());
-      }
+function guncelleKayitlar() {
+  const tbody = document.getElementById("kayitlarBody");
+  tbody.innerHTML = "";
 
-      // Günlük kayıtları göster
-      kayitlarDiv.innerHTML = '';
-      if (gunlukKayitlar.length === 0) {
-        kayitlarDiv.innerHTML = '<p style="color:#666;text-align:center;">Bugün kayıt yok.</p>';
-        return;
-      }
+  if (gunlukKayitlar.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Bugün için kayıt yok.</td></tr>`;
+    return;
+  }
 
-      gunlukKayitlar.forEach(k => {
-        const div = document.createElement('div');
-        div.classList.add('record');
-        div.textContent = `${k.tarih} ${k.saat} - ${k.isim} ${k.tip === 'giriş' ? 'girdi' : 'çıktı'}`;
-        kayitlarDiv.appendChild(div);
-      });
-    }
+  gunlukKayitlar.forEach(kayit => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${kayit.isim}</td>
+      <td>${kayit.tip === 'giris' ? 'Giriş' : 'Çıkış'}</td>
+      <td>${kayit.time}</td>
+      <td>${kayit.date}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
-    // Mesai kaydetme fonksiyonu
-    function mesaiKaydet(tip) {
-      const isim = isimInput.value.trim();
-      if (!isim) {
-        alert('Lütfen isminizi girin!');
-        return;
-      }
+function mesaiKaydet(tip) {
+  const isim = document.getElementById("isim").value.trim();
+  if (!isim) {
+    alert("Lütfen isminizi giriniz!");
+    return;
+  }
+  const ts = tarihSaatObj();
 
-      const now = new Date();
-      const tarih = now.toISOString().split('T')[0];
-      const saat = now.toTimeString().split(' ')[0];
+  const yeniKayit = {
+    isim,
+    tip,
+    time: ts.saat,
+    date: ts.tarih,
+    dateObj: ts.dateObj
+  };
 
-      // Günlük kayıtlar
-      let gunlukKayitlar = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  // Günlük kayıtlara ekle
+  gunlukKayitlar.push(yeniKayit);
+  localStorage.setItem("gunlukMesaiKayitlar", JSON.stringify(gunlukKayitlar));
 
-      // Admin kayıtları (tüm zaman)
-      let adminKayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
+  // Admin (tüm) kayıtlara da ekle
+  let tumKayitlar = localStorage.getItem("tumMesaiKayitlar");
+  tumKayitlar = tumKayitlar ? JSON.parse(tumKayitlar) : [];
+  tumKayitlar.push(yeniKayit);
+  localStorage.setItem("tumMesaiKayitlar", JSON.stringify(tumKayitlar));
 
-      const kayit = { isim, tip, tarih, saat };
+  guncelleKayitlar();
+}
 
-      // Günlük kayıt ekle
-      gunlukKayitlar.push(kayit);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(gunlukKayitlar));
+window.onload = function() {
+  gunlukKayitlar = loadGunlukKayitlar();
+  guncelleKayitlar();
+};
+</script>
 
-      // Admin kayıt ekle
-      adminKayitlar.push(kayit);
-      localStorage.setItem(STORAGE_ADMIN_KEY, JSON.stringify(adminKayitlar));
-
-      localStorage.setItem('kayit_tarih', bugunTarih());
-
-      kayitlariGetir();
-    }
-
-    // Admin butonuna tıklayınca modal açılır
-    adminBtn.addEventListener('click', () => {
-      const sifre = prompt('Admin şifresi nedir?');
-      if (sifre === 'admin123') {  // Şifreyi istediğin gibi değiştir
-        adminModalBg.style.display = 'flex';
-      } else if (sifre !== null) {
-        alert('Yanlış şifre!');
-      }
-    });
-
-    adminCloseBtn.addEventListener('click', () => {
-      adminModalBg.style.display = 'none';
-    });
-
-    // Admin panelden tüm kayıtları silme fonksiyonu
-    function tumuSil() {
-      if (confirm('Tüm kayıtları silmek istediğinize emin misiniz?')) {
-        localStorage.removeItem(STORAGE_ADMIN_KEY);
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem('kayit_tarih');
-        kayitlariGetir();
-        alert('Tüm kayıtlar silindi.');
-      }
-    }
-
-    // Sayfa yüklenince kayıtları getir
-    window.onload = () => {
-      kayitlariGetir();
-    };
-  </script>
 </body>
 </html>
