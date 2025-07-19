@@ -169,28 +169,36 @@
 <button id="logoutBtn">Çıkış</button>
 
 <script>
-  const STORAGE_ADMIN_KEY = 'mesai_kayitlari_admin';
+  // Mesai kayıtlarının localStorage key'i
+  const STORAGE_ADMIN_KEY = 'mesai_kayitlari';
+
   const recordsTableBody = document.getElementById('recordsTableBody');
   const noRecords = document.getElementById('noRecords');
   const searchInput = document.getElementById('searchInput');
   const clearAllBtn = document.getElementById('clearAllBtn');
   const logoutBtn = document.getElementById('logoutBtn');
 
+  // Admin giriş şifresi
+  const ADMIN_PASSWORD = 'admin123';
+
+  // Sayfa açılır açılmaz admin şifresi sor
   function adminLogin() {
     const pass = prompt('Admin şifresi:');
-    if (pass !== 'admin123') {
+    if (pass !== ADMIN_PASSWORD) {
       alert('Yanlış şifre! Ana sayfaya yönlendiriliyorsunuz.');
       window.location.href = 'index.html';
-    } else {
-      loadRecords();
+      return;
     }
+    loadRecords();
   }
 
+  // Kayıtları yükle ve göster
   function loadRecords() {
     const kayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
     displayRecords(kayitlar);
   }
 
+  // Kayıtları tabloya bas
   function displayRecords(kayitlar) {
     recordsTableBody.innerHTML = '';
     if (kayitlar.length === 0) {
@@ -202,27 +210,27 @@
     kayitlar.forEach((k, index) => {
       const tr = document.createElement('tr');
 
-      // İsim hücresi
+      // İsim
       const isimTd = document.createElement('td');
       isimTd.textContent = k.isim;
       tr.appendChild(isimTd);
 
-      // Tip hücresi
+      // Tip
       const tipTd = document.createElement('td');
       tipTd.textContent = k.tip === 'giriş' ? 'Giriş' : 'Çıkış';
       tr.appendChild(tipTd);
 
-      // Tarih hücresi
+      // Tarih
       const tarihTd = document.createElement('td');
       tarihTd.textContent = k.tarih;
       tr.appendChild(tarihTd);
 
-      // Saat hücresi
+      // Saat
       const saatTd = document.createElement('td');
       saatTd.textContent = k.saat;
       tr.appendChild(saatTd);
 
-      // İşlem hücresi: Sil ve Düzenle butonları
+      // İşlem (Düzenle ve Sil)
       const islemTd = document.createElement('td');
 
       const editBtn = document.createElement('button');
@@ -244,16 +252,14 @@
 
       islemTd.appendChild(editBtn);
       islemTd.appendChild(delBtn);
-
       tr.appendChild(islemTd);
 
       recordsTableBody.appendChild(tr);
     });
   }
 
-  // Düzenleme başlatma fonksiyonu
+  // Düzenleme işlemini başlat
   function startEdit(tr, kayit, index) {
-    // Hücreleri editable inputlara dönüştür
     tr.innerHTML = '';
 
     // İsim input
@@ -281,14 +287,14 @@
     tipTd.appendChild(tipSelect);
     tr.appendChild(tipTd);
 
-    // Tarih input (date tipi)
+    // Tarih input (date)
     const tarihTd = document.createElement('td');
     const tarihInput = document.createElement('input');
     tarihInput.type = 'date';
-    // Tarih formatı yyyy-mm-dd değilse çevirelim
-    const dateParts = kayit.tarih.split('.');
-    if(dateParts.length === 3){
-      tarihInput.value = `${dateParts[2]}-${dateParts[1].padStart(2,'0')}-${dateParts[0].padStart(2,'0')}`;
+    // Tarihi yyyy-mm-dd formatına çevir (localStorage'dan dd.mm.yyyy geldiği için)
+    const parts = kayit.tarih.split('.');
+    if(parts.length === 3) {
+      tarihInput.value = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
     } else {
       tarihInput.value = kayit.tarih; // fallback
     }
@@ -296,7 +302,7 @@
     tarihTd.appendChild(tarihInput);
     tr.appendChild(tarihTd);
 
-    // Saat input (time tipi)
+    // Saat input (time)
     const saatTd = document.createElement('td');
     const saatInput = document.createElement('input');
     saatInput.type = 'time';
@@ -305,14 +311,13 @@
     saatTd.appendChild(saatInput);
     tr.appendChild(saatTd);
 
-    // İşlem butonları: Kaydet ve İptal
+    // İşlem butonları (Kaydet, İptal)
     const islemTd = document.createElement('td');
 
     const saveBtn = document.createElement('button');
     saveBtn.textContent = 'Kaydet';
     saveBtn.className = 'btn-save';
     saveBtn.onclick = () => {
-      // Yeni değerleri al ve kaydet
       const yeniIsim = isimInput.value.trim();
       const yeniTip = tipSelect.value;
       const yeniTarihRaw = tarihInput.value;
@@ -331,7 +336,6 @@
       }
       const yeniTarih = `${dt.getDate().toString().padStart(2,'0')}.${(dt.getMonth()+1).toString().padStart(2,'0')}.${dt.getFullYear()}`;
 
-      // Kaydı güncelle
       const kayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
       kayitlar[index] = {
         isim: yeniIsim,
@@ -347,7 +351,6 @@
     cancelBtn.textContent = 'İptal';
     cancelBtn.className = 'btn-cancel';
     cancelBtn.onclick = () => {
-      // Düzenlemeyi iptal et ve eski hali göster
       loadRecords();
     };
 
@@ -356,6 +359,7 @@
     tr.appendChild(islemTd);
   }
 
+  // Arama fonksiyonu
   searchInput.addEventListener('input', () => {
     const query = searchInput.value.toLowerCase();
     const kayitlar = JSON.parse(localStorage.getItem(STORAGE_ADMIN_KEY)) || [];
@@ -365,6 +369,7 @@
     displayRecords(filtered);
   });
 
+  // Tüm kayıtları temizle
   clearAllBtn.addEventListener('click', () => {
     if (confirm('Tüm kayıtları silmek istediğinize emin misiniz?')) {
       localStorage.removeItem(STORAGE_ADMIN_KEY);
@@ -372,11 +377,13 @@
     }
   });
 
+  // Çıkış butonu
   logoutBtn.addEventListener('click', () => {
     window.location.href = 'index.html';
   });
 
   window.onload = adminLogin;
+
 </script>
 
 </body>
