@@ -3,20 +3,80 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Admin - Mesai Kayıtları</title>
+<title>Günlük Mesai Takip</title>
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; }
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-  th { background-color: #f2f2f2; }
-  button { padding: 10px 20px; margin-top: 15px; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f7f8;
+    color: #333;
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h2 {
+    text-align: center;
+    color: #007BFF;
+    margin-bottom: 30px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  button {
+    width: 48%;
+    padding: 12px 0;
+    margin: 5px 1% 20px 1%;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  th {
+    background-color: #007BFF;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  tbody tr:hover {
+    background-color: #f1f9ff;
+  }
+  td:first-child {
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
 
-<h2>Admin - Tüm Mesai Kayıtları</h2>
+<h2>Günlük Mesai Takip Sistemi</h2>
 
-<table id="adminKayitlarTable">
+<input type="text" id="isim" placeholder="İsminizi girin" />
+<button onclick="mesaiKaydet('giris')">Giriş</button>
+<button onclick="mesaiKaydet('cikis')">Çıkış</button>
+
+<table id="kayitlarTable">
   <thead>
     <tr>
       <th>İsim</th>
@@ -25,25 +85,59 @@
       <th>Tarih</th>
     </tr>
   </thead>
-  <tbody id="adminKayitlarBody"></tbody>
+  <tbody id="kayitlarBody"></tbody>
 </table>
 
-<button onclick="temizleTumKayitlar()">Tüm Kayıtları Temizle</button>
-
 <script>
-function guncelleAdminKayitlar() {
-  const tbody = document.getElementById("adminKayitlarBody");
+// Tarih ve saat objesi döndürür
+function tarihSaatObj() {
+  const dateObj = new Date();
+  const tarih = dateObj.toLocaleDateString('tr-TR');
+  const saat = dateObj.toLocaleTimeString('tr-TR');
+  return { dateObj, tarih, saat };
+}
+
+function getTodayDateStr() {
+  const d = new Date();
+  const pad = n => n < 10 ? '0' + n : n;
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+let gunlukKayitlar = [];
+
+function loadGunlukKayitlar() {
+  let saved = localStorage.getItem("gunlukMesaiKayitlar");
+  if (!saved) return [];
+
+  let parsed = JSON.parse(saved);
+
+  if (parsed.length > 0) {
+    let firstDateObj = new Date(parsed[0].dateObj);
+    let firstDateStr = firstDateObj.getFullYear() + "-" 
+                     + (firstDateObj.getMonth()+1 < 10 ? '0' : '') + (firstDateObj.getMonth()+1) + "-"
+                     + (firstDateObj.getDate() < 10 ? '0' : '') + firstDateObj.getDate();
+
+    if (firstDateStr !== getTodayDateStr()) {
+      localStorage.removeItem("gunlukMesaiKayitlar");
+      return [];
+    }
+  }
+
+  // Date objesini düzelt
+  parsed.forEach(k => { k.dateObj = new Date(k.dateObj); });
+  return parsed;
+}
+
+function guncelleKayitlar() {
+  const tbody = document.getElementById("kayitlarBody");
   tbody.innerHTML = "";
 
-  let tumKayitlar = localStorage.getItem("tumMesaiKayitlar");
-  tumKayitlar = tumKayitlar ? JSON.parse(tumKayitlar) : [];
-
-  if (tumKayitlar.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Kayıt bulunmamaktadır.</td></tr>`;
+  if (gunlukKayitlar.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Bugün için kayıt yok.</td></tr>`;
     return;
   }
 
-  tumKayitlar.forEach(kayit => {
+  gunlukKayitlar.forEach(kayit => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${kayit.isim}</td>
@@ -55,16 +149,38 @@ function guncelleAdminKayitlar() {
   });
 }
 
-function temizleTumKayitlar() {
-  if (confirm("Tüm mesai kayıtları kalıcı olarak silinecek. Emin misiniz?")) {
-    localStorage.removeItem("tumMesaiKayitlar");
-    alert("Tüm kayıtlar silindi.");
-    guncelleAdminKayitlar();
+function mesaiKaydet(tip) {
+  const isim = document.getElementById("isim").value.trim();
+  if (!isim) {
+    alert("Lütfen isminizi giriniz!");
+    return;
   }
+  const ts = tarihSaatObj();
+
+  const yeniKayit = {
+    isim,
+    tip,
+    time: ts.saat,
+    date: ts.tarih,
+    dateObj: ts.dateObj
+  };
+
+  // Günlük kayıtlara ekle
+  gunlukKayitlar.push(yeniKayit);
+  localStorage.setItem("gunlukMesaiKayitlar", JSON.stringify(gunlukKayitlar));
+
+  // Admin (tüm) kayıtlara da ekle
+  let tumKayitlar = localStorage.getItem("tumMesaiKayitlar");
+  tumKayitlar = tumKayitlar ? JSON.parse(tumKayitlar) : [];
+  tumKayitlar.push(yeniKayit);
+  localStorage.setItem("tumMesaiKayitlar", JSON.stringify(tumKayitlar));
+
+  guncelleKayitlar();
 }
 
 window.onload = function() {
-  guncelleAdminKayitlar();
+  gunlukKayitlar = loadGunlukKayitlar();
+  guncelleKayitlar();
 };
 </script>
 
