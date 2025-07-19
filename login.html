@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Şık Giriş</title>
+  <title>Giriş Ekranı</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -22,17 +22,13 @@
       padding: 40px 32px;
       min-width: 320px;
       text-align: center;
-      transition: box-shadow 0.2s;
       max-width: 360px;
     }
     .brand {
       font-size: 2rem;
       color: #2563eb;
       font-weight: bold;
-      letter-spacing: 0.03em;
       margin-bottom: 22px;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      display: inline-block;
     }
     .display {
       font-size: 2rem;
@@ -46,14 +42,12 @@
       color: #222;
       border: none;
       box-shadow: 0 1px 8px #e5e7eb;
-      margin-top: 4px;
       outline: none;
     }
     .keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-gap: 18px;
-      justify-content: center;
       margin-bottom: 24px;
     }
     .keypad button {
@@ -65,106 +59,37 @@
       padding: 18px 0;
       cursor: pointer;
       box-shadow: 0 4px 16px rgba(30,64,175,0.06), 0 1px 4px #2563eb22;
-      transition: box-shadow 0.25s, background 0.2s, border 0.2s;
-      font-weight: 500;
-      outline: none;
-      min-width: 60px;
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .keypad button:hover,
-    .keypad button:active {
-      background: #e0e7ff;
-      box-shadow: 0 0 18px #2563eb44;
-      border-color: #2563eb;
     }
     .actions {
       display: flex;
       justify-content: space-between;
       gap: 14px;
-      margin-top: 8px;
     }
     .btn {
       flex: 1;
       font-size: 1.09rem;
       padding: 14px 0;
-      border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
       font-weight: 500;
+      border: none;
     }
     .btn-login {
       background: linear-gradient(90deg, #2563eb 60%, #3b82f6 100%);
       color: #fff;
-      box-shadow: 0 2px 8px rgba(37,99,235,0.14);
-      border: none;
-    }
-    .btn-login:hover, .btn-login:active {
-      background: linear-gradient(90deg, #1e40af 60%, #2563eb 100%);
-      box-shadow: 0 0 16px #2563eb55;
     }
     .btn-clear {
       background: linear-gradient(90deg, #ef4444 60%, #f87171 100%);
       color: #fff;
-      box-shadow: 0 2px 8px rgba(239,68,68,0.08);
-      border: none;
-    }
-    .btn-clear:hover, .btn-clear:active {
-      background: linear-gradient(90deg, #b91c1c 60%, #ef4444 100%);
-      box-shadow: 0 0 16px #ef444455;
     }
     .msg {
       font-size: 1rem;
       color: #ef4444;
       margin-top: 16px;
       min-height: 22px;
-      transition: color 0.2s;
     }
     .msg.success {
       color: #22c55e;
-    }
-    /* WhatsApp Tuşu */
-    .whatsapp-btn {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      z-index: 99;
-      background: #25d366;
-      border-radius: 50%;
-      width: 64px;
-      height: 64px;
-      box-shadow: 0 4px 18px #25d36655;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: none;
-      transition: box-shadow 0.2s, background 0.2s;
-      outline: none;
-    }
-    .whatsapp-btn:hover, .whatsapp-btn:active {
-      background: #128C7E;
-      box-shadow: 0 0 24px #25d36688;
-    }
-    .whatsapp-icon {
-      width: 34px;
-      height: 34px;
-      display: block;
-    }
-    @media(max-width:600px){
-      .whatsapp-btn{
-        width:56px;
-        height:56px;
-        right:16px;
-        bottom:16px;
-      }
-      .whatsapp-icon{
-        width:27px;
-        height:27px;
-      }
     }
   </style>
 </head>
@@ -182,9 +107,9 @@
       <button onclick="addNum('7')">7</button>
       <button onclick="addNum('8')">8</button>
       <button onclick="addNum('9')">9</button>
-      <button style="visibility: hidden;"> </button>
+      <button style="visibility:hidden"></button>
       <button onclick="addNum('0')">0</button>
-      <button style="visibility: hidden;"> </button>
+      <button style="visibility:hidden"></button>
     </div>
     <div class="actions">
       <button class="btn btn-clear" onclick="clearPw()">Sil</button>
@@ -192,35 +117,35 @@
     </div>
     <div class="msg" id="msg"></div>
   </div>
-  <!-- WhatsApp Tuşu -->
-  <a href="https://wa.me/6283871500278" target="_blank" class="whatsapp-btn" title="WhatsApp ile iletişime geç">
-    <span class="whatsapp-icon">
-      <!-- WhatsApp SVG Logo -->
-      <svg viewBox="0 0 32 32" width="100%" height="100%">
-        <circle cx="16" cy="16" r="16" fill="#25d366"/>
-        <path d="M22.4 17.2c-.4-.2-2.5-1.2-2.9-1.3-.4-.1-.7-.2-1 .2-.3.4-1.2 1.3-1.5 1.5-.3.3-.6.3-1 .1-.8-.4-1.5-.7-2.2-1.3-.6-.6-1.1-1.2-1.5-2-.2-.3 0-.7.2-.9.2-.2.4-.5.6-.8.2-.2.2-.5.1-.7-.1-.2-.9-2.2-1.2-3-.3-.8-.6-.7-.9-.7-.2 0-.5 0-.8 0-.3 0-.7.3-.8.7-.4 1.3-.2 2.6.4 3.8.9 1.7 2.2 3.1 3.8 4 .8.4 1.7.7 2.5.8.4.1.8.1 1.2.1.4 0 .8 0 1.2-.1.4-.1 1.2-.4 1.4-.8.2-.4.2-.7.1-.9z" fill="#fff"/>
-      </svg>
-    </span>
-  </a>
+
   <script>
     let pw = "";
+
     function addNum(n) {
       if (pw.length < 4) pw += n;
       document.getElementById("pwdisplay").value = "*".repeat(pw.length);
       document.getElementById("msg").textContent = "";
       document.getElementById("msg").classList.remove("success");
     }
+
     function clearPw() {
       pw = "";
       document.getElementById("pwdisplay").value = "";
       document.getElementById("msg").textContent = "";
       document.getElementById("msg").classList.remove("success");
     }
+
     function login() {
       if (pw === "1234") {
         document.getElementById("msg").textContent = "Giriş başarılı!";
         document.getElementById("msg").classList.add("success");
-        // Burada yönlendirme veya başka işlem yapılabilir
+
+        // Giriş yapıldığını işaretle
+        sessionStorage.setItem("giris", "ok");
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
       } else {
         document.getElementById("msg").textContent = "Yanlış şifre!";
         document.getElementById("msg").classList.remove("success");
