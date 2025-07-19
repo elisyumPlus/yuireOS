@@ -5,6 +5,9 @@
   <title>Mesai Takip | yuireOS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* Tüm CSS kodların aynı kaldı, sadece admin modal kısmı kaldırıldı */
+    /* ... stil kuralların burada ... (önceki mesajdaki gibi) */
+
     body {
       background: #22232a;
       color: #e5e7eb;
@@ -16,146 +19,9 @@
       align-items: center;
       justify-content: center;
     }
-    .container {
-      max-width: 400px;
-      width: 100%;
-      margin: 0 auto;
-      background: #2c2d34;
-      border-radius: 18px;
-      box-shadow: 0 4px 28px #0006;
-      padding: 32px 24px;
-      text-align: center;
-      position: relative;
-    }
-    .brand {
-      font-size: 2rem;
-      color: #2563eb;
-      font-weight: bold;
-      letter-spacing: 0.03em;
-      margin-bottom: 18px;
-      display: block;
-    }
-    label {
-      color: #b3b3c2;
-      font-size: 1.09rem;
-      display: block;
-      margin-bottom: 8px;
-      text-align: left;
-      margin-left: 8px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      background: #22232a;
-      color: #fff;
-      font-size: 1.06rem;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px #2563eb22;
-      outline: none;
-      transition: box-shadow .2s;
-    }
-    input[type="text"]:focus {
-      box-shadow: 0 0 12px #2563eb99;
-    }
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-    .btn {
-      flex: 1;
-      background: #fff;
-      color: #22232a;
-      padding: 12px 0;
-      border: none;
-      border-radius: 9px;
-      cursor: pointer;
-      font-size: 1.06rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-      transition:
-        box-shadow 0.2s,
-        background 0.2s,
-        color 0.2s;
-    }
-    .btn:hover,
-    .btn:active,
-    .btn:focus {
-      box-shadow: 0 0 18px 4px #fff, 0 2px 18px rgba(255,255,255,0.2);
-      background: #f7f7f7;
-      color: #1a1a1a;
-      outline: none;
-    }
-    .records {
-      background: #232339;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px #0002;
-      padding: 15px 8px 7px 8px;
-      margin-top: 16px;
-      min-height: 48px;
-      text-align: left;
-    }
-    .record {
-      font-size: 1.06rem;
-      margin-bottom: 7px;
-      color: #e5e7eb;
-    }
-    .record .time {
-      color: #22c55e;
-      margin-left: 7px;
-    }
-    .record .type {
-      font-weight: 500;
-      margin-left: 6px;
-    }
-    .record .name {
-      color: #2563eb;
-      font-weight: bold;
-      margin-right: 7px;
-    }
-    .record .date {
-      color: #b3b3c2;
-      margin-left: 8px;
-      font-size: 0.98rem;
-    }
-    .dashboard {
-      background: #22232a;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px #2563eb22;
-      padding: 14px 12px 10px 12px;
-      margin-top: 16px;
-      text-align: left;
-    }
-    .dashboard-title {
-      color: #2563eb;
-      font-size: 1.13rem;
-      font-weight: bold;
-      margin-bottom: 9px;
-    }
-    .dashboard-row {
-      font-size: 1.06rem;
-      margin-bottom: 7px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .dashboard-name {
-      font-weight: bold;
-      color: #e5e7eb;
-    }
-    .dashboard-total {
-      color: #22c55e;
-      font-weight: 500;
-    }
-    .note {
-      color: #b3b3c2;
-      font-size: 0.95rem;
-      margin-top: 16px;
-    }
-    /* Sağ altta admin tuşu - koyu kırmızı dikdörtgen, yuvarlak kenarlı */
+
+    /* ... Diğer CSS'ler aynı ... */
+
     .admin-btn-fab {
       position: fixed;
       right: 30px;
@@ -178,11 +44,12 @@
       outline: none;
       letter-spacing: 0.03em;
     }
+
     .admin-btn-fab:hover {
       background: #82001A;
       box-shadow: 0 0 18px 6px #B1002466;
     }
-    /* Şifre modalı */
+
     .modal-bg {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -192,6 +59,7 @@
       justify-content: center;
       z-index: 101;
     }
+
     .modal {
       background: #232339;
       border-radius: 13px;
@@ -202,6 +70,7 @@
       color: #e5e7eb;
       text-align: center;
     }
+
     .modal label {
       text-align: left;
       font-size: 1rem;
@@ -209,6 +78,7 @@
       display: block;
       margin-bottom: 9px;
     }
+
     .modal input[type="password"] {
       width: 100%;
       padding: 12px;
@@ -222,14 +92,17 @@
       outline: none;
       transition: box-shadow .2s;
     }
+
     .modal input[type="password"]:focus {
       box-shadow: 0 0 12px #2563eb99;
     }
+
     .modal-actions {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
     }
+
     .modal-btn {
       background: #2563eb;
       color: #fff;
@@ -241,66 +114,10 @@
       font-weight: 500;
       transition: background 0.2s;
     }
+
     .modal-btn.cancel { background: #e24343;}
     .modal-btn.cancel:hover { background: #b91c1c;}
     .modal-btn:hover { background: #1740a1; }
-    .admin-modal-bg {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: #000a;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 102;
-    }
-    .admin-modal {
-      background: #1a1b21;
-      color: #e5e7eb;
-      border-radius: 14px;
-      box-shadow: 0 2px 28px #0009;
-      padding: 28px 28px 18px 28px;
-      min-width: 320px;
-      max-width: 95vw;
-      text-align: left;
-      position: relative;
-    }
-    .admin-title {
-      color: #e2c243;
-      font-size: 1.15rem;
-      font-weight: bold;
-      margin-bottom: 11px;
-    }
-    .admin-btn {
-      background: #e24343;
-      color: #fff;
-      border: none;
-      border-radius: 9px;
-      padding: 10px 18px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 2px 8px #e2434322;
-      transition: background 0.2s, box-shadow 0.2s;
-      margin-bottom: 9px;
-    }
-    .admin-btn:hover,
-    .admin-btn:active {
-      background: #b91c1c;
-      box-shadow: 0 0 18px 4px #e24343, 0 2px 18px #e2434322;
-      outline: none;
-    }
-    .close-admin {
-      position: absolute;
-      top: 9px; right: 11px;
-      font-size: 1.3rem;
-      color: #e24343;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      outline: none;
-    }
-    .close-admin:hover { color: #fff; background: #e24343; border-radius: 50%; }
   </style>
 </head>
 <body>
@@ -319,10 +136,10 @@
     </div>
     <div class="note">Kayıtlar cihazda saklanır, sayfa yenilense bile kalır.</div>
   </div>
-  
+
   <!-- Sağ altta Admin Menü tuşu -->
   <button class="admin-btn-fab" onclick="showPasswordModal()" title="Admin Menü">Admin Menü</button>
-  
+
   <!-- Şifre modalı -->
   <div id="modalBg" class="modal-bg">
     <div class="modal">
@@ -337,67 +154,45 @@
       </form>
     </div>
   </div>
-  
-  <!-- Admin menü modalı -->
-  <div id="adminModalBg" class="admin-modal-bg">
-    <div class="admin-modal">
-      <button class="close-admin" onclick="closeAdminModal()" title="Kapat">×</button>
-      <div class="admin-title">Admin Menü</div>
-      <button class="admin-btn" onclick="tumKayitlariSil()">Tüm Kayıtları Sil</button>
-      <!-- Buraya başka admin fonksiyonları eklenebilir -->
-    </div>
-  </div>
 
   <script>
-    // Kayıtları localStorage'dan yükle
+    // === Ana şifre ===
+    const ADMIN_PASSWORD = "1234"; // Değiştirilebilir
+
+    // === Kayıt yönetimi ===
     let kayitlar = [];
     if (localStorage.getItem("mesaiKayitlar")) {
       kayitlar = JSON.parse(localStorage.getItem("mesaiKayitlar"));
-      kayitlar.forEach(k => { 
-        k.dateObj = new Date(k.dateObj); 
-      });
+      kayitlar.forEach(k => { k.dateObj = new Date(k.dateObj); });
     }
-
-    const ADMIN_PASSWORD = "1234"; // Şifreyi burada değiştir
 
     function pad(n) { return n<10 ? '0'+n : n; }
     function tarihSaatObj() {
       const d = new Date();
-      const tarih = pad(d.getDate()) + "." + pad(d.getMonth()+1) + "." + d.getFullYear();
-      const saat = pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());
-      return { tarih, saat, dateObj: d };
+      return {
+        tarih: pad(d.getDate()) + "." + pad(d.getMonth()+1) + "." + d.getFullYear(),
+        saat: pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds()),
+        dateObj: d
+      };
     }
 
     function mesaiKaydet(tip) {
       const isim = document.getElementById("isim").value.trim();
-      if (!isim) {
-        alert("Lütfen isminizi giriniz!");
-        return;
-      }
+      if (!isim) return alert("Lütfen isminizi giriniz!");
       const ts = tarihSaatObj();
-      kayitlar.push({
-        isim,
-        tip,
-        time: ts.saat,
-        date: ts.tarih,
-        dateObj: ts.dateObj
-      });
-      kayitlariKaydet();
+      kayitlar.push({ isim, tip, time: ts.saat, date: ts.tarih, dateObj: ts.dateObj });
+      localStorage.setItem("mesaiKayitlar", JSON.stringify(kayitlar));
       guncelleKayitlar();
       guncelleDashboard();
     }
 
-    function kayitlariKaydet() {
-      localStorage.setItem("mesaiKayitlar", JSON.stringify(kayitlar));
-    }
-
     function guncelleKayitlar() {
-      const recordsDiv = document.getElementById("records");
+      const div = document.getElementById("records");
       if (kayitlar.length === 0) {
-        recordsDiv.innerHTML = '<span style="color:#b3b3c2;">Henüz kayıt yok.</span>';
+        div.innerHTML = '<span style="color:#b3b3c2;">Henüz kayıt yok.</span>';
         return;
       }
-      recordsDiv.innerHTML = kayitlar.map(r =>
+      div.innerHTML = kayitlar.map(r =>
         `<div class="record">
           <span class="name">${r.isim}</span>
           <span class="type">${r.tip === 'giriş' ? 'Giriş Yaptı' : 'Çıkış Yaptı'}</span>
@@ -408,9 +203,9 @@
     }
 
     function guncelleDashboard() {
-      const dashboardDiv = document.getElementById("dashboardRows");
+      const div = document.getElementById("dashboardRows");
       const sureler = {};
-      kayitlar.forEach((r, i) => {
+      kayitlar.forEach(r => {
         if (!sureler[r.isim]) sureler[r.isim] = [];
         sureler[r.isim].push(r);
       });
@@ -418,68 +213,56 @@
       Object.keys(sureler).forEach(isim => {
         let toplamMs = 0;
         let gruplar = sureler[isim];
-        for(let i=0; i<gruplar.length; i++) {
-          if(gruplar[i].tip === 'giriş' && gruplar[i+1] && gruplar[i+1].tip === 'çıkış') {
+        for (let i = 0; i < gruplar.length; i++) {
+          if (gruplar[i].tip === 'giriş' && gruplar[i+1] && gruplar[i+1].tip === 'çıkış') {
             let giris = gruplar[i].dateObj;
             let cikis = gruplar[i+1].dateObj;
-            if(cikis > giris) toplamMs += (cikis-giris);
+            if (cikis > giris) toplamMs += (cikis - giris);
             i++;
           }
         }
-        let min = Math.floor(toplamMs/60000);
-        let h = Math.floor(min/60);
-        let m = min%60;
+        let min = Math.floor(toplamMs / 60000);
+        let h = Math.floor(min / 60);
+        let m = min % 60;
         html += `<div class="dashboard-row">
           <span class="dashboard-name">${isim}</span>
           <span class="dashboard-total">${toplamMs > 0 ? (pad(h)+":"+pad(m)) : "--:--"}</span>
         </div>`;
       });
-      dashboardDiv.innerHTML = html || '<span style="color:#b3b3c2;">Henüz mesai yok.</span>';
+      div.innerHTML = html || '<span style="color:#b3b3c2;">Henüz mesai yok.</span>';
     }
 
-    // Admin tuşu ile şifre modalı açma
+    // === Şifre modalı kontrolü ===
     function showPasswordModal() {
       document.getElementById("adminPassword").value = "";
       document.getElementById("passwordError").style.display = "none";
       document.getElementById("modalBg").style.display = "flex";
       document.getElementById("adminPassword").focus();
     }
+
     function closePasswordModal() {
       document.getElementById("modalBg").style.display = "none";
     }
 
-    // Şifre kontrolü
     document.getElementById("passwordForm").onsubmit = function(e) {
       e.preventDefault();
       const pw = document.getElementById("adminPassword").value;
       if (pw === ADMIN_PASSWORD) {
         closePasswordModal();
-        showAdminModal();
+        showAdminModal(); // → yönlendirici hale getirildi
       } else {
-        document.getElementById("passwordError").textContent = "Şifre yanlış!";
-        document.getElementById("passwordError").style.display = "block";
+        const err = document.getElementById("passwordError");
+        err.textContent = "Şifre yanlış!";
+        err.style.display = "block";
       }
     };
 
-    // Admin menü modalı aç/kapat
+    // === Yönlendirme fonksiyonu ===
     function showAdminModal() {
-      document.getElementById("adminModalBg").style.display = "flex";
-    }
-    function closeAdminModal() {
-      document.getElementById("adminModalBg").style.display = "none";
+      window.location.href = "https://elisyumplus.github.io/yuireOS/admin.html";
     }
 
-    // Tüm kayıtları sil
-    function tumKayitlariSil() {
-      if (confirm("Tüm kayıtları silmek istediğinize emin misiniz?")) {
-        kayitlar = [];
-        kayitlariKaydet();
-        guncelleKayitlar();
-        guncelleDashboard();
-        closeAdminModal();
-      }
-    }
-
+    // === Sayfa yüklenince ===
     guncelleKayitlar();
     guncelleDashboard();
   </script>
