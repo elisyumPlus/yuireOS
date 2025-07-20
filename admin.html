@@ -2,36 +2,251 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<title>Sevgi Dolu Yazı</title>
+<title>Admin Panel - YuireOS</title>
 <style>
   body {
-    background-color: #222;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #606060, #013220);
     margin: 0;
-  }
-  .kayanyazi {
-    font-size: 48px;
-    font-weight: bold;
-    color: #ff69b4; /* Pembe renk */
-    font-family: 'Arial', sans-serif;
-    white-space: nowrap;
-    animation: kaydir 10s linear infinite;
+    padding: 20px;
+    color: #fff;
   }
 
-  @keyframes kaydir {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  #sifreGiris {
+    max-width: 350px;
+    margin: 50px auto;
+    padding: 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+
+  #sifreGiris input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+
+  #sifreGiris button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #28a745;
+    color: #fff;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  #sifreGiris button:hover {
+    background-color: #218838;
+  }
+
+  #adminPanel {
+    display: none;
+    max-width: 900px;
+    margin: 30px auto;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* Kayıtlar tablosu */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+
+  th {
+    background-color: rgba(0,0,0,0.2);
+    font-weight: bold;
+  }
+
+  /* Düzenleme ve silme butonları */
+  .btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.3s;
+  }
+
+  .btn-edit {
+    background-color: #ffc107;
+    color: #fff;
+    margin-right: 8px;
+  }
+
+  .btn-edit:hover {
+    background-color: #e0a800;
+  }
+
+  .btn-delete {
+    background-color: #dc3545;
+    color: #fff;
+  }
+
+  .btn-delete:hover {
+    background-color: #c82333;
+  }
+
+  /* Yeni kayıt butonu */
+  #yenikayitBtn {
+    display: block;
+    margin: 20px auto;
+    padding: 14px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  #yenikayitBtn:hover {
+    background-color: #0069d9;
+  }
+
+  /* Kayıt satırında düzenleme alanları */
+  input[type=text] {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
   }
 </style>
 </head>
 <body>
-  <div class="kayanyazi">Seni Çooooooook Seviyorum İREM! ❤️</div>
+
+<h1>Admin Paneli</h1>
+
+<div id="sifreGiris">
+  <input type="password" id="adminSifre" placeholder="Şifreyi Giriniz" />
+  <button id="sifreGonder">Giriş Yap</button>
+</div>
+
+<div id="adminPanel">
+  <h2>Kayıtlar ve Düzenleme</h2>
+  
+  <button id="yenikayitBtn">Yeni Kayıt Ekle</button>
+  
+  <table id="kayıtTablo">
+    <thead>
+      <tr>
+        <th>İsim / Soyisim</th>
+        <th>Saat</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Kayıtlar buraya gelecek -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  let kayitlar = [];
+
+  // Şifre doğrulama
+  document.getElementById('sifreGonder').onclick = () => {
+    const sifre = document.getElementById('adminSifre').value;
+    if (sifre === 'nrusplus') {
+      document.getElementById('sifreGiris').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      renderKayıtlar(); // Burada fonksiyon çağrısı
+    } else {
+      alert('Yanlış şifre!');
+      document.getElementById('adminSifre').value = '';
+    }
+  };
+
+  // Yeni kayıt ekleme
+document.getElementById('yenikayitBtn').onclick = () => {
+  const yeniKayıt = { isim: '', saat: '' };
+  kayitlar.push(yeniKayıt);
+  renderKayıtlar();
+};
+
+// Kayıtları render et
+function renderKayıtlar() {
+  const tbody = document.querySelector('#kayıtTablo tbody');
+  tbody.innerHTML = '';
+
+  kayitlar.forEach((k, index) => {
+    const tr = document.createElement('tr');
+
+    // isim hücresi
+    const tdIsim = document.createElement('td');
+    const inputIsim = document.createElement('input');
+    inputIsim.type = 'text';
+    inputIsim.value = k.isim;
+    inputIsim.onchange = () => {
+      kayitlar[index].isim = inputIsim.value;
+    };
+    tdIsim.appendChild(inputIsim);
+    tr.appendChild(tdIsim);
+
+    // saat hücresi
+    const tdSaat = document.createElement('td');
+    const inputSaat = document.createElement('input');
+    inputSaat.type = 'text';
+    inputSaat.value = k.saat;
+    inputSaat.onchange = () => {
+      kayitlar[index].saat = inputSaat.value;
+    };
+    tdSaat.appendChild(inputSaat);
+    tr.appendChild(tdSaat);
+
+    // işlemler hücresi
+    const tdIslemler = document.createElement('td');
+
+    const btnEdit = document.createElement('button');
+    btnEdit.innerText = 'Düzenle';
+    btnEdit.className = 'btn btn-edit';
+    btnEdit.onclick = () => {
+      alert('Düzenleme alanları aktif. Değişiklikleri yapıp kaydetmek için düzenleyebilirsiniz.');
+    };
+
+    const btnSil = document.createElement('button');
+    btnSil.innerText = 'Sil';
+    btnSil.className = 'btn btn-delete';
+    btnSil.onclick = () => {
+      kayitlar.splice(index, 1);
+      renderKayıtlar();
+    };
+
+    tdIslemler.appendChild(btnEdit);
+    tdIslemler.appendChild(btnSil);
+    tr.appendChild(tdIslemler);
+
+    tbody.appendChild(tr);
+  });
+}
+</script>
+
 </body>
 </html>
