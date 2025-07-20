@@ -2,329 +2,420 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<title>YuireOS Mesai Takip</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Restoran Mesai Takip Sistemi</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(135deg, #606060, #013220);
-    font-family: Arial, sans-serif;
-    position: relative;
-    overflow: hidden;
-  }
-
-  #girisForm {
-    width: 400px;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    margin: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    z-index: 10;
-  }
-
-  #mesaiTakip {
-    display: none;
-    width: 400px;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    margin: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
-
-  h1 {
-    color: #fff;
-    margin-bottom: 20px;
-    font-size: 2em;
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff;
-  }
-
-  input[type="text"], input[type="password"] {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 8px;
-    outline: none;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-    background: rgba(255,255,255,0.2);
-    color: #fff;
-    margin-bottom: 20px;
-  }
-
-  button {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.1em;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
-  }
-
-  #loginBtn {
-    background-color: #28a745;
-    color: #fff;
-  }
-
-  #loginBtn:hover {
-    background-color: #444;
-  }
-
-  #mesaiTakip h2 {
-    color: #fff;
-  }
-
-  /* Mesai giriş çıkış butonları */
-  .mesai-btn {
-    width: 45%;
-    margin: 2.5%;
-    padding: 10px 0;
-    font-size: 1em;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: #fff;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  }
-
-  .mesai-btn:hover {
-    box-shadow: 0 0 15px #4CAF50;
-    background-color: #45a049;
-  }
-
-  #kayitlar {
-    margin-top: 20px;
-    max-height: 200px;
-    overflow-y: auto;
-    background: rgba(255,255,255,0.2);
-    padding: 10px;
-    border-radius: 8px;
-    text-align: left;
-  }
-
-  #kayitlar h3 {
-    margin-top: 0;
-    color: #fff;
-  }
-
-  #kayıtListesi {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  #kayıtListesi li {
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.3);
-    color: #fff;
-  }
-
-  /* Sol alt kedi ikonu */
-  #kediButton {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    width: 50px;
-    height: 50px;
-    background-color: transparent; /* arka plan şeffaf */
-    border: none;
-    font-size: 2em;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-    color: white;
-    text-shadow: 0 0 5px #000;
-  }
-
-  #kediButton:hover {
-    transform: scale(1.1);
-  }
-
-  /* Admin Menü Butonu - sağ üstte */
-#adminMenuButton {
-  position: fixed;
-  top: 10px; /* yukarıdan uzaklık */
-  right: 10px; /* sağdan uzaklık */
-  padding: 8px 12px; /* iç boşluk, daha küçük */
-  max-width: 120px; /* maksimum genişlik sınırı */
-  width: auto; /* içeriğe göre ayarla */
-  background-color: #444;
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, #4B0082, #000000);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  min-height: 100vh;
+  margin: 0;
   color: #fff;
+}
+h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px #000;
+}
+h3 {
+  margin-top: 0;
+}
+input[type="text"], input[type="password"], input[type="time"], textarea {
+  width: 350px;
+  padding: 12px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background-color: #2F2F2F;
+  color: #fff;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="time"]:focus {
+  outline: none;
+  border-color: #9370DB;
+  box-shadow: 0 0 8px rgba(147, 112, 219, 0.7);
+  background-color: #3A3A3A;
+}
+button {
+  width: 180px;
+  padding: 12px 0;
+  margin: 10px;
   border: none;
   border-radius: 8px;
+  font-size: 16px;
   cursor: pointer;
-  font-size: 1em;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  transition: background-color 0.3s;
-  z-index: 20;
-  display: none; /* başlangıçta gizli */
+  transition: all 0.3s ease;
+  font-weight: 600;
 }
-
-  #adminMenuButton:hover {
-    background-color: #222;
-  }
+button:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+#adminGiris {
+  display: none;
+  margin-top: 15px;
+  background: #222;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  width: 370px;
+  max-width: 90%;
+  text-align: center;
+}
+#adminGiris input {
+  width: 70%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #2F2F2F;
+  color: #fff;
+}
+#adminBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4B0082;
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 50px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+#adminBtn:hover {
+  background-color: #6A0DAD;
+}
+#kayıtlarDiv, #adminPanel, #duzenlemeDiv {
+  display: none;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 30px;
+  background: linear-gradient(135deg, #4B0082, #000000);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  color: #fff;
+}
+h3 {
+  margin-top: 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+th, td {
+  padding: 12px;
+  border: 1px solid #9370DB;
+  border-radius: 4px;
+}
+tr:nth-child(even) {
+  background-color: rgba(147, 112, 219, 0.2);
+}
+tr:hover {
+  background-color: rgba(147, 112, 219, 0.3);
+}
+#filtreInput {
+  width: 250px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #2F2F2F;
+  color: #fff;
+}
 </style>
 </head>
 <body>
-<div id="girisForm">
-  <h1>YuireOS</h1>
-  <input type="password" placeholder="Şifrenizi Giriniz" id="passwordInput" />
-  <button id="loginBtn">Giriş Yap</button>
+
+<h2>Restoran Mesai Takip Sistemi</h2>
+
+<h3>Mesai Kayıt</h3>
+<input type="text" id="mesaiIsimInput" placeholder="İsim girin" />
+<div>
+  <button class="btn-mesai-basi" onclick="kaydetMesai('Başlangıç')">Mesai Başlangıcı</button>
+  <button class="btn-mesai-bit" onclick="kaydetMesai('Bitiş')">Mesai Bitişi</button>
 </div>
 
-<div id="mesaiTakip">
-  <h2>Mesai Takip Sistemi</h2>
-  <input type="text" id="isimInput" placeholder="İsim/Soyisim" />
-  <div style="display:flex; justify-content: space-around; flex-wrap: wrap;">
-    <button class="mesai-btn" id="girisSaat">Giriş</button>
-    <button class="mesai-btn" id="cikisSaat">Çıkış</button>
-  </div>
-  <div>
-    <p>Giriş Zamanı: <span id="girisZaman">-</span></p>
-    <p>Çıkış Zamanı: <span id="cikisZaman">-</span></p>
-    <p>Seçilen Gün Toplam Çalışma Süresi: <span id="toplamSure">0 saat 0 dakika</span></p>
-  </div>
-  <div id="kayitlar">
-    <h3>Kayıtlar</h3>
-    <ul id="kayıtListesi"></ul>
-  </div>
+<!-- Admin giriş -->
+<div id="adminGiris">
+  <input type="password" id="adminPassword" placeholder="Admin şifresi" />
+  <br />
+  <button onclick="girisYap()">Giriş Yap</button>
+  <button onclick="iptalGiris()">İptal</button>
 </div>
 
-<!-- Sol altta kedi ikonu -->
-<button id="kediButton" title="İrem Sayfasına Git">🐱</button>
+<!-- Admin Menüsü -->
+<button id="adminBtn" onclick="adminGoster()">Admin Menüsü</button>
 
-<!-- Sağ üstte admin menü butonu -->
-<button id="adminMenuButton" title="Admin Menüsü">Admin Menü</button>
+<!-- Kayıtlar -->
+<div id="kayıtlarDiv">
+  <h3>Kayıtlar</h3>
+  <input type="text" id="filtreInput" placeholder="İsim veya Tür ile filtrele" onkeyup="filtreKayıtlar()" />
+  <table id="kayıtTablosu">
+    <thead>
+      <tr>
+        <th>İsim</th>
+        <th>Tür</th>
+        <th>Zaman</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- Düzenleme Bölümü -->
+<div id="duzenlemeDiv">
+  <h3>Kayıt Düzenle</h3>
+  <label>İsim:</label>
+  <input type="text" id="duzenleIsim" />
+  <br />
+  <label>Saat:</label>
+  <input type="time" id="duzenleSaat" />
+  <br />
+  <label>Notlar:</label>
+  <textarea id="duzenleNotlar" rows="3" placeholder="Notlar buraya"></textarea>
+  <br />
+  <button onclick="kaydetDuzenleme()">Kaydet</button>
+  <button onclick="iptalDuzenleme()">İptal</button>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel">
+  <h3>Admin Paneli</h3>
+  <button style="background:#d50000; color:#fff; padding:10px; border:none; border-radius:6px; cursor:pointer;" onclick="kayıtlarıTemizle()">Tüm Kayıtları Sil</button>
+  <br/><br/>
+  <div id="adminIslemler" style="display:none;">
+    <h4>Saat ve Not İşlemleri</h4>
+    <button onclick="saatGuncelle()">Saatleri Güncelle</button>
+    <button onclick="notEkle()">Not Ekle</button>
+    <br/><br/>
+    <h4>Kayıt Sorgulama</h4>
+    <input type="text" id="sorguInput" placeholder="İsim veya Tür ile sorgula" />
+    <button onclick="sorgula()">Sorgula</button>
+    <button onclick="tumKayıtlarıGoster()">Tüm Kayıtları Göster</button>
+  </div>
+</div>
 
 <script>
-  // Giriş yap
-  document.getElementById('loginBtn').onclick = () => {
-    const password = document.getElementById('passwordInput').value;
-    if (password === '1234') {
-      document.getElementById('girisForm').style.display = 'none';
-      document.getElementById('mesaiTakip').style.display = 'block';
-      document.getElementById('adminMenuButton').style.display = 'block';
-    } else {
-      alert('Yanlış şifre!');
-      document.getElementById('passwordInput').value = '';
+const MESAI_STORAGE_KEY = 'mesai_kayitlar';
+let adminSifre = "nrusplus";
+let adminGirisYapildi = false;
+
+// Seçilen kaydı tutan değişken
+let seciliKayıtIndex = null;
+
+// Mesai kayıtlarını yükle
+function yükleMesai() {
+  const veriler = localStorage.getItem(MESAI_STORAGE_KEY);
+  return veriler ? JSON.parse(veriler) : [];
+}
+
+// Kayıtları göster
+function yükleKayıtlar() {
+  const mesaiKayitlar = yükleMesai();
+  const tbody = document.querySelector('#kayıtTablosu tbody');
+  tbody.innerHTML = '';
+
+  mesaiKayitlar.forEach((kayıt, index) => {
+    const satir = tbody.insertRow();
+    satir.insertCell(0).innerText = kayıt.isim;
+    satir.insertCell(1).innerText = kayıt.tür;
+    let zamanMetni = kayıt.zaman || '';
+    if (kayıt.saat) {
+      zamanMetni += ` (Saat: ${kayıt.saat})`;
     }
-  };
+    if (kayıt.notlar && kayıt.notlar.length > 0) {
+      zamanMetni += ` | Notlar: ${kayıt.notlar.join(', ')}`;
+    }
+    satir.insertCell(2).innerText = zamanMetni;
 
-  const kayıtlar = {};
-  let aktifKayıt = null;
-  let secilenTarih = null;
+    const islemCell = satir.insertCell(3);
+    if (adminGirisYapildi) {
+      const duzenleBtn = document.createElement('button');
+      duzenleBtn.innerText = 'Düzenle';
+      duzenleBtn.style.marginRight = '8px';
+      duzenleBtn.onclick = () => {
+        // Düzenleme ekranını aç
+        document.getElementById('duzenlemeDiv').style.display = 'block';
+        document.getElementById('kayıtlarDiv').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'none';
 
-  function getGünKey(zaman) {
-    const y = zaman.getFullYear();
-    const m = (zaman.getMonth() + 1).toString().padStart(2, '0');
-    const d = zaman.getDate().toString().padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
+        // Düzenlenecek kaydı tut
+        seciliKayıtIndex = index;
 
-  function hesaplaGünToplam(tarihKey) {
-    let toplam = 0;
-    if (kayıtlar[tarihKey]) {
-      for (const kayit of kayıtlar[tarihKey]) {
-        if (kayit.cikisZamani) {
-          const fark = Math.floor((kayit.cikisZamani - kayit.girisZamani) / 60000);
-          toplam += fark;
-        }
+        // Formu doldur
+        document.getElementById('duzenleIsim').value = kayıt.isim;
+        document.getElementById('duzenleSaat').value = kayıt.saat || '';
+        document.getElementById('duzenleNotlar').value = (kayıt.notlar || []).join(', ');
+      };
+      islemCell.appendChild(duzenleBtn);
+    }
+
+    const silBtn = document.createElement('button');
+    silBtn.innerText = 'Sil';
+    silBtn.onclick = () => {
+      if (confirm('Kayıt silinsin mi?')) {
+        const kayitlar = yükleMesai();
+        kayitlar.splice(index, 1);
+        localStorage.setItem(MESAI_STORAGE_KEY, JSON.stringify(kayitlar));
+        yükleKayıtlar();
       }
-    }
-    return toplam;
-  }
-
-  function güncelleToplamSüre(tarihKey) {
-    const toplamDakika = hesaplaGünToplam(tarihKey);
-    const saat = Math.floor(toplamDakika / 60);
-    const dakika = toplamDakika % 60;
-    document.getElementById('toplamSure').textContent = `${saat} saat ${dakika} dakika`;
-  }
-
-  document.getElementById('girisSaat').onclick = () => {
-    const isimInput = document.getElementById('isimInput').value.trim();
-    if (!isimInput) {
-      alert('Lütfen isim/Soyisim giriniz.');
-      return;
-    }
-    const zaman = new Date();
-    const günKey = getGünKey(zaman);
-    secilenTarih = günKey;
-
-    if (!kayıtlar[günKey]) {
-      kayıtlar[günKey] = [];
-    }
-    aktifKayıt = {
-      girisZamani: zaman,
-      cikisZamani: null
     };
-    kayıtlar[günKey].push(aktifKayıt);
-    document.getElementById('girisZaman').textContent = zaman.toLocaleString();
-    document.getElementById('cikisZaman').textContent = '-';
+    islemCell.appendChild(silBtn);
+  });
+}
 
-    addKayıt(`${isimInput} Giriş`, zaman);
-  };
+// Kaydı düzenleme ekranını iptal et
+function iptalDuzenleme() {
+  document.getElementById('duzenlemeDiv').style.display = 'none';
+  document.getElementById('kayıtlarDiv').style.display = 'block';
+  document.getElementById('adminPanel').style.display = 'block';
+  seciliKayıtIndex = null;
+}
 
-  document.getElementById('cikisSaat').onclick = () => {
-    if (!aktifKayıt) {
-      alert('Lütfen önce giriş yapınız.');
-      return;
+// Kaydet butonu
+function kaydetDuzenleme() {
+  if (seciliKayıtIndex === null) return;
+  const isim = document.getElementById('duzenleIsim').value.trim();
+  const saat = document.getElementById('duzenleSaat').value.trim();
+  const notlarInput = document.getElementById('duzenleNotlar').value.trim();
+  const notlar = notlarInput ? notlarInput.split(',').map(n => n.trim()) : [];
+
+  const kayitlar = yükleMesai();
+  if (kayitlar[seciliKayıtIndex]) {
+    kayitlar[seciliKayıtIndex].isim = isim;
+    kayitlar[seciliKayıtIndex].saat = saat;
+    kayitlar[seciliKayıtIndex].notlar = notlar;
+    localStorage.setItem(MESAI_STORAGE_KEY, JSON.stringify(kayitlar));
+  }
+  iptalDuzenleme();
+  yükleKayıtlar();
+}
+
+// Mesai kaydı ekleme
+function kaydetMesai(tip) {
+  const isim = document.getElementById('mesaiIsimInput').value.trim();
+  if (!isim) { alert('Lütfen isim girin!'); return; }
+  const zaman = new Date().toLocaleString();
+
+  const kayit = { isim, tür: tip, zaman, notlar: [], saat: null };
+  const kayitlar = yükleMesai();
+  // Eğer düzenleme yapılıyorsa, güncelle
+  if (seciliKayıtIndex !== null && seciliKayıtTip === 'mesai') {
+    kayitlar[seciliKayıtIndex] = { ...kayitlar[seciliKayıtIndex], isim, tür: tip, zaman };
+    seciliKayıtIndex = null;
+  } else {
+    kayitlar.push(kayit);
+  }
+  localStorage.setItem(MESAI_STORAGE_KEY, JSON.stringify(kayitlar));
+  yükleKayıtlar();
+  document.getElementById('mesaiIsimInput').value = '';
+}
+
+// Admin giriş
+function adminGoster() {
+  document.getElementById('adminGiris').style.display = 'block';
+}
+function girisYap() {
+  const sifre = document.getElementById('adminPassword').value.trim();
+  if (sifre === "nrusplus") {
+    alert('Admin giriş başarılı!');
+    adminGirisYapildi = true;
+    document.getElementById('adminGiris').style.display = 'none';
+    document.getElementById('kayıtlarDiv').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'block';
+    yükleKayıtlar();
+  } else {
+    alert('Hatalı şifre!');
+  }
+  document.getElementById('adminPassword').value = '';
+}
+function iptalGiris() {
+  document.getElementById('adminGiris').style.display = 'none';
+}
+
+// Kayıtları sil
+function kayıtlarıTemizle() {
+  if (confirm('Tüm kayıtlar silinecek. Onaylıyor musunuz?')) {
+    localStorage.removeItem(MESAI_STORAGE_KEY);
+    yükleKayıtlar();
+  }
+}
+
+// Filtre
+function filtreKayıtlar() {
+  const filter = document.getElementById('filtreInput').value.toLowerCase();
+  const tbody = document.querySelector('#kayıtTablosu tbody');
+  Array.from(tbody.rows).forEach(row => {
+    const isim = row.cells[0].innerText.toLowerCase();
+    const tür = row.cells[1].innerText.toLowerCase();
+    if (isim.includes(filter) || tür.includes(filter)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
     }
-    const zaman = new Date();
-    aktifKayıt.cikisZamani = zaman;
+  });
+}
 
-    const günKey = getGünKey(aktifKayıt.girisZamani);
-    güncelleToplamSüre(günKey);
-
-    document.getElementById('cikisZaman').textContent = zaman.toLocaleString();
-
-    addKayıt(`${isimInput} Çıkış`, zaman, Math.floor((zaman - aktifKayıt.girisZamani) / 60000));
-
-    aktifKayıt = null;
-  };
-
-  function addKayıt(metin, zaman, sureDakika = null) {
-    const li = document.createElement('li');
-    const zamanStr = zaman ? zaman.toLocaleString() : '';
-    const sureStr = sureDakika !== null ? ` - Süre: ${formatSure(sureDakika)}` : '';
-    li.textContent = `${metin} | Tarih: ${zamanStr}${sureStr}`;
-    document.getElementById('kayıtListesi').appendChild(li);
+// Not ekleme fonksiyonu
+function notEkle() {
+  if (!adminGirisYapildi) {
+    alert('Önce admin giriş yapın.');
+    return;
   }
-
-  function formatSure(dakika) {
-    const saat = Math.floor(dakika / 60);
-    const kalanDakika = dakika % 60;
-    return `${saat} saat ${kalanDakika} dakika`;
+  if (seciliKayıtIndex === null) {
+    alert('Lütfen önce düzenlenecek kaydı seçin.');
+    return;
   }
+  const not = prompt('Not ekmek için yazın:');
+  if (not) {
+    const kayitlar = yükleMesai();
+    if (!kayitlar[seciliKayıtIndex].notlar) {
+      kayitlar[seciliKayıtIndex].notlar = [];
+    }
+    kayitlar[seciliKayıtIndex].notlar.push(not);
+    localStorage.setItem(MESAI_STORAGE_KEY, JSON.stringify(kayitlar));
+    yükleKayıtlar();
+  }
+}
 
-  // Kedi ikonuna tıklandığında yönlendirme
-  document.getElementById('kediButton').onclick = () => {
-    window.location.href = 'https://elisyumplus.github.io/yuireOS/irem.html';
-  };
+// Saat güncelleme fonksiyonu
+function saatGuncelle() {
+  if (!adminGirisYapildi) {
+    alert('Önce admin giriş yapın.');
+    return;
+  }
+  if (seciliKayıtIndex === null) {
+    alert('Lütfen önce düzenlenecek kaydı seçin.');
+    return;
+  }
+  const saat = prompt('Saat bilgisi girin (örneğin: 14:30):');
+  if (saat) {
+    const kayitlar = yükleMesai();
+    if (kayitlar[seciliKayıtIndex]) {
+      kayitlar[seciliKayıtIndex].saat = saat;
+      localStorage.setItem(MESAI_STORAGE_KEY, JSON.stringify(kayitlar));
+      yükleKayıtlar();
+    }
+  }
+}
 
-  // Admin Menü butonuna tıklandığında
-  document.getElementById('adminMenuButton').onclick = () => {
-    window.location.href = 'https://elisyumplus.github.io/yuireOS/admin.html';
-  };
+// Sayfa yüklendiğinde kayıtları göster
+window.onload = () => {
+  yükleKayıtlar();
+};
 </script>
 </body>
 </html>
+<div style="position: fixed; bottom: 10px; left: 10px; font-size: 40px; cursor: pointer;" title="Discord'a Git" onclick="window.location.href='https://elisyumplus.github.io/yuireOS/irem.html'">
+  🐱
+</div>
