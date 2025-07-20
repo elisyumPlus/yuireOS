@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #000;
+      background-color: #000 !important; /* Kesin siyah arka plan */
     }
 
     #c {
@@ -19,6 +19,7 @@
       width: 100%;
       height: 100%;
       z-index: 1;
+      background-color: transparent !important; /* Canvas arka planı transparan */
     }
 
     #toggle-fullscreen {
@@ -75,12 +76,11 @@
     }
 
     function getNeonColor() {
-      // Canlı neon pembe ve mor tonları (tam görseldeki gibi)
       const neonColors = [
-        'hsla(300, 100%, 65%, 0.7)',  // neon pembe
-        'hsla(285, 100%, 60%, 0.7)',  // mor
-        'hsla(315, 100%, 70%, 0.7)',  // fuşya
-        'hsla(295, 100%, 75%, 0.7)'   // pembe-mor geçiş
+        'hsla(300, 100%, 65%, 0.7)',
+        'hsla(285, 100%, 60%, 0.7)',
+        'hsla(315, 100%, 70%, 0.7)',
+        'hsla(295, 100%, 75%, 0.7)'
       ];
       return neonColors[Math.floor(Math.random() * neonColors.length)];
     }
@@ -121,58 +121,56 @@
 
     function animationLoop() {
       if (!animationRunning) return;
-      try {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        trails.forEach(trail => {
-          if (!trail || !trail.length) return;
-          const leader = trail[0];
-          const target = heartPath[leader.targetIndex % heartPath.length];
-          if (!target) return;
+      // Tam siyah arka plan için alpha 1
+      ctx.fillStyle = "rgba(0, 0, 0, 1)";
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-          if (mouseActive && config.mouseInfluence > 0) {
-            const dx = mouseX - leader.x;
-            const dy = mouseY - leader.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 300) {
-              const force = (1 - dist / 300) * (config.mouseInfluence / 20);
-              leader.velX += dx / dist * force;
-              leader.velY += dy / dist * force;
-            }
-          }
+      trails.forEach(trail => {
+        if (!trail || !trail.length) return;
+        const leader = trail[0];
+        const target = heartPath[leader.targetIndex % heartPath.length];
+        if (!target) return;
 
-          const dx = leader.x - target[0];
-          const dy = leader.y - target[1];
+        if (mouseActive && config.mouseInfluence > 0) {
+          const dx = mouseX - leader.x;
+          const dy = mouseY - leader.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 10) {
-            if (Math.random() > 0.95) {
-              leader.targetIndex = Math.floor(Math.random() * heartPath.length);
-            } else {
-              if (Math.random() > 0.99) leader.direction *= -1;
-              leader.targetIndex += leader.direction;
-              leader.targetIndex = (leader.targetIndex + heartPath.length) % heartPath.length;
-            }
+          if (dist < 300) {
+            const force = (1 - dist / 300) * (config.mouseInfluence / 20);
+            leader.velX += dx / dist * force;
+            leader.velY += dy / dist * force;
           }
+        }
 
-          leader.velX += -dx / dist * leader.speed * config.speed;
-          leader.velY += -dy / dist * leader.speed * config.speed;
-          leader.x += leader.velX;
-          leader.y += leader.velY;
-          leader.velX *= leader.friction;
-          leader.velY *= leader.friction;
+        const dx = leader.x - target[0];
+        const dy = leader.y - target[1];
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-          renderParticle(leader);
-          for (let k = 1; k < trail.length; k++) {
-            trail[k].x -= (trail[k].x - trail[k - 1].x) * 0.7;
-            trail[k].y -= (trail[k].y - trail[k - 1].y) * 0.7;
-            renderParticle(trail[k]);
+        if (dist < 10) {
+          if (Math.random() > 0.95) {
+            leader.targetIndex = Math.floor(Math.random() * heartPath.length);
+          } else {
+            if (Math.random() > 0.99) leader.direction *= -1;
+            leader.targetIndex += leader.direction;
+            leader.targetIndex = (leader.targetIndex + heartPath.length) % heartPath.length;
           }
-        });
-      } catch (err) {
-        console.error("Animation error:", err);
-      }
+        }
+
+        leader.velX += -dx / dist * leader.speed * config.speed;
+        leader.velY += -dy / dist * leader.speed * config.speed;
+        leader.x += leader.velX;
+        leader.y += leader.velY;
+        leader.velX *= leader.friction;
+        leader.velY *= leader.friction;
+
+        renderParticle(leader);
+        for (let k = 1; k < trail.length; k++) {
+          trail[k].x -= (trail[k].x - trail[k - 1].x) * 0.7;
+          trail[k].y -= (trail[k].y - trail[k - 1].y) * 0.7;
+          renderParticle(trail[k]);
+        }
+      });
 
       requestAnimationFrame(animationLoop);
     }
