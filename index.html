@@ -160,21 +160,24 @@
   }
 
   /* Admin Menü Butonu - sağ üstte */
-  #adminMenuButton {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 10px 15px;
-    background-color: #444;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background-color 0.3s;
-    z-index: 20;
-  }
+#adminMenuButton {
+  position: fixed;
+  top: 10px; /* yukarıdan uzaklık */
+  right: 10px; /* sağdan uzaklık */
+  padding: 8px 12px; /* iç boşluk, daha küçük */
+  max-width: 120px; /* maksimum genişlik sınırı */
+  width: auto; /* içeriğe göre ayarla */
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+  z-index: 20;
+  display: none; /* başlangıçta gizli */
+}
 
   #adminMenuButton:hover {
     background-color: #222;
