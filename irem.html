@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title> CCHear11t Particles</title>
+  <title>Neon Heart Particles - Kırmızı & Pembe</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #000 !important; /* Kesin siyah arka plan */
+      background-color: #000 !important;
     }
 
     #c {
@@ -19,7 +19,7 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      background-color: transparent !important; /* Canvas arka planı transparan */
+      background-color: transparent !important;
     }
 
     #toggle-fullscreen {
@@ -43,7 +43,7 @@
 
   <script>
     const config = {
-      particleCount: 22,
+      particleCount: 20,
       speed: 2,
       mouseInfluence: 100,
       particleSize: 3
@@ -75,12 +75,20 @@
       }
     }
 
+    // Kırmızı ve pembe neon tonları karışık renk dizisi
     function getNeonColor() {
       const neonColors = [
-        'hsla(300, 100%, 65%, 0.7)',
-        'hsla(285, 100%, 60%, 0.7)',
-        'hsla(315, 100%, 70%, 0.7)',
-        'hsla(295, 100%, 75%, 0.7)'
+        // Kırmızı tonları
+        'hsla(0, 100%, 70%, 0.8)',   // parlak kırmızı
+        'hsla(0, 100%, 60%, 0.7)',   // koyu kırmızı
+        'hsla(10, 100%, 65%, 0.75)', // turuncuya yakın kırmızı
+        'hsla(350, 100%, 75%, 0.7)',  // pembe-kırmızı ton
+
+        // Pembe tonları
+        'hsla(300, 100%, 65%, 0.7)',  // neon pembe
+        'hsla(315, 100%, 70%, 0.7)',  // fuşya
+        'hsla(285, 100%, 60%, 0.7)',  // morumsu pembe
+        'hsla(295, 100%, 75%, 0.7)'   // pembe-mor geçiş
       ];
       return neonColors[Math.floor(Math.random() * neonColors.length)];
     }
@@ -122,7 +130,6 @@
     function animationLoop() {
       if (!animationRunning) return;
 
-      // Tam siyah arka plan için alpha 1
       ctx.fillStyle = "rgba(0, 0, 0, 1)";
       ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
