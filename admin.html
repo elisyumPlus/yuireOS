@@ -82,7 +82,7 @@
     font-weight: bold;
   }
 
-  /* Düzenleme ve silme butonları */
+  /* Butonlar */
   .btn {
     padding: 8px 12px;
     border: none;
@@ -97,7 +97,6 @@
     color: #fff;
     margin-right: 8px;
   }
-
   .btn-edit:hover {
     background-color: #e0a800;
   }
@@ -106,12 +105,11 @@
     background-color: #dc3545;
     color: #fff;
   }
-
   .btn-delete:hover {
     background-color: #c82333;
   }
 
-  /* Yeni kayıt butonu */
+  /* Yeni kayıt ekleme butonu */
   #yenikayitBtn {
     display: block;
     margin: 20px auto;
@@ -124,19 +122,19 @@
     cursor: pointer;
     transition: background 0.3s;
   }
-
   #yenikayitBtn:hover {
     background-color: #0069d9;
   }
 
-  /* Kayıt satırında düzenleme alanları */
-  input[type=text] {
+  /* Giriş ekranı */
+  input[type=text], input[type=password] {
     width: 100%;
-    padding: 8px 10px;
+    padding: 10px;
     border-radius: 6px;
     border: none;
     background: rgba(255,255,255,0.2);
     color: #fff;
+    font-size: 1em;
   }
 </style>
 </head>
@@ -144,16 +142,16 @@
 
 <h1>Admin Paneli</h1>
 
+<!-- Giriş bölümü -->
 <div id="sifreGiris">
   <input type="password" id="adminSifre" placeholder="Şifreyi Giriniz" />
   <button id="sifreGonder">Giriş Yap</button>
 </div>
 
+<!-- Yönetim paneli -->
 <div id="adminPanel">
   <h2>Kayıtlar ve Düzenleme</h2>
-  
   <button id="yenikayitBtn">Yeni Kayıt Ekle</button>
-  
   <table id="kayıtTablo">
     <thead>
       <tr>
@@ -171,13 +169,13 @@
 <script>
   let kayitlar = [];
 
-  // Şifre doğrulama
+  // Şifre ile giriş
   document.getElementById('sifreGonder').onclick = () => {
     const sifre = document.getElementById('adminSifre').value;
     if (sifre === 'nrusplus') {
       document.getElementById('sifreGiris').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
-      renderKayıtlar(); // Burada fonksiyon çağrısı
+      renderKayıtlar(); // Sayfa yüklendiğinde veya giriş sonrası çağrılır
     } else {
       alert('Yanlış şifre!');
       document.getElementById('adminSifre').value = '';
@@ -191,7 +189,7 @@ document.getElementById('yenikayitBtn').onclick = () => {
   renderKayıtlar();
 };
 
-// Kayıtları render et
+// Kayıtları tabloya render et
 function renderKayıtlar() {
   const tbody = document.querySelector('#kayıtTablo tbody');
   tbody.innerHTML = '';
@@ -199,36 +197,38 @@ function renderKayıtlar() {
   kayitlar.forEach((k, index) => {
     const tr = document.createElement('tr');
 
-    // isim hücresi
+    // İsim/Soyisim hücresi
     const tdIsim = document.createElement('td');
     const inputIsim = document.createElement('input');
     inputIsim.type = 'text';
     inputIsim.value = k.isim;
+    inputIsim.placeholder = 'İsim / Soyisim';
     inputIsim.onchange = () => {
       kayitlar[index].isim = inputIsim.value;
     };
     tdIsim.appendChild(inputIsim);
     tr.appendChild(tdIsim);
 
-    // saat hücresi
+    // Saat hücresi
     const tdSaat = document.createElement('td');
     const inputSaat = document.createElement('input');
     inputSaat.type = 'text';
     inputSaat.value = k.saat;
+    inputSaat.placeholder = 'Saat';
     inputSaat.onchange = () => {
       kayitlar[index].saat = inputSaat.value;
     };
     tdSaat.appendChild(inputSaat);
     tr.appendChild(tdSaat);
 
-    // işlemler hücresi
+    // İşlemler
     const tdIslemler = document.createElement('td');
 
     const btnEdit = document.createElement('button');
     btnEdit.innerText = 'Düzenle';
     btnEdit.className = 'btn btn-edit';
     btnEdit.onclick = () => {
-      alert('Düzenleme alanları aktif. Değişiklikleri yapıp kaydetmek için düzenleyebilirsiniz.');
+      alert('Düzenleme alanları aktif. Değişiklikleri yapıp kaydedebilirsiniz.');
     };
 
     const btnSil = document.createElement('button');
@@ -246,6 +246,9 @@ function renderKayıtlar() {
     tbody.appendChild(tr);
   });
 }
+
+// Sayfa ilk yüklendiğinde veya giriş yapıldığında tabloda görünür hale gelir
+// Ama başlangıçta boş olduğu için görünmüyor, bu normal.
 </script>
 
 </body>
