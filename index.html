@@ -98,15 +98,15 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background-color: #4CAF50; /* Uyumlu yeşil renk */
+    background-color: #4CAF50;
     color: #fff;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   }
 
   .mesai-btn:hover {
-    box-shadow: 0 0 15px #4CAF50; /* Hoverda parlayan efekt */
-    background-color: #45a049; /* Daha koyu yeşil */
+    box-shadow: 0 0 15px #4CAF50;
+    background-color: #45a049;
   }
 
   #kayitlar {
@@ -136,27 +136,48 @@
     color: #fff;
   }
 
-  /* Sağ alta admin butonu başlangıçta gizli ve boyutu küçük */
-  #adminButton {
-    display: none; /* başlangıçta gizli */
+  /* Sol alt kedi ikonu */
+  #kediButton {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 8px 12px; /* Küçük padding */
-    background-color: #ff5722;
+    bottom: 10px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent; /* arka plan şeffaf */
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    color: white;
+    text-shadow: 0 0 5px #000;
+  }
+
+  #kediButton:hover {
+    transform: scale(1.1);
+  }
+
+  /* Admin Menü Butonu - sağ üstte */
+  #adminMenuButton {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 10px 15px;
+    background-color: #444;
     color: #fff;
     border: none;
-    border-radius: 6px; /* Hafif yuvarlak köşe */
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9em; /* Küçük font */
+    font-size: 1em;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s;
     z-index: 20;
   }
 
-  #adminButton:hover {
-    background-color: #e64a19;
-    box-shadow: 0 0 10px #e64a19; /* Parlama efekti */
+  #adminMenuButton:hover {
+    background-color: #222;
   }
 </style>
 </head>
@@ -185,18 +206,20 @@
   </div>
 </div>
 
-<!-- Sağ alta admin butonu başlangıçta gizli -->
-<button id="adminButton">Admin Menüsü</button>
+<!-- Sol altta kedi ikonu -->
+<button id="kediButton" title="İrem Sayfasına Git">🐱</button>
+
+<!-- Sağ üstte admin menü butonu -->
+<button id="adminMenuButton" title="Admin Menüsü">Admin Menü</button>
 
 <script>
-  // Giriş yap fonksiyonu
+  // Giriş yap
   document.getElementById('loginBtn').onclick = () => {
     const password = document.getElementById('passwordInput').value;
     if (password === '1234') {
       document.getElementById('girisForm').style.display = 'none';
       document.getElementById('mesaiTakip').style.display = 'block';
-      // Admin butonunu göster
-      document.getElementById('adminButton').style.display = 'block';
+      document.getElementById('adminMenuButton').style.display = 'block';
     } else {
       alert('Yanlış şifre!');
       document.getElementById('passwordInput').value = '';
@@ -290,9 +313,14 @@
     return `${saat} saat ${kalanDakika} dakika`;
   }
 
-  // Admin butonuna tıklandığında
-  document.getElementById('adminButton').onclick = () => {
-    alert('Admin menüsü burada geliştirilebilir.');
+  // Kedi ikonuna tıklandığında yönlendirme
+  document.getElementById('kediButton').onclick = () => {
+    window.location.href = 'https://elisyumplus.github.io/yuireOS/irem.html';
+  };
+
+  // Admin Menü butonuna tıklandığında
+  document.getElementById('adminMenuButton').onclick = () => {
+    window.location.href = 'https://elisyumplus.github.io/yuireOS/admin.html';
   };
 </script>
 </body>
