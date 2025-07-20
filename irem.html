@@ -1,217 +1,520 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>:)</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: #000 !important;
-    }
-
-    #c {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      background-color: transparent !important;
-    }
-
-    #toggle-fullscreen {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 100;
-      backdrop-filter: blur(5px);
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kalp Neon Renkler - Şifreli Giriş + İltifatlar</title>
+<style>
+  body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: Arial, sans-serif; color: white; }
+  #c {
+    display: none; /* Başta gizli, şifre doğru girilince görünür */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  #passwordScreen {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.85);
+    border: 2px solid #ff79c6;
+    border-radius: 15px;
+    padding: 30px 40px;
+    text-align: center;
+    z-index: 10;
+    width: 300px;
+    box-sizing: border-box;
+  }
+  #passwordScreen label {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  #passwordInput {
+    width: 100%;
+    font-size: 18px;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  #catButtons {
+    font-size: 32px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  #errorMsg {
+    color: #ff4c4c;
+    min-height: 24px;
+  }
+  #toggle-fullscreen {
+    position: fixed;
+    top: 20px; right: 20px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 15;
+    display: none; /* Başta gizli, sadece kalp açıkken görünür */
+  }
+  #compliment {
+    display: none; /* Başta gizli */
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 0 8px #ff79c6;
+    z-index: 20;
+    user-select: none;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+</style>
 </head>
 <body>
-  <button id="toggle-fullscreen">Full Screen</button>
-  <canvas id="c"></canvas>
 
-  <script>
-    const config = {
-      particleCount: 21,
-      speed: 2.5,
-      mouseInfluence: 100,
-      particleSize: 3
-    };
+<div id="passwordScreen">
+  <label for="passwordInput">Lütfen Şifreyi Girin:</label>
+  <input id="passwordInput" type="password" autocomplete="off" placeholder="Şifre" />
+  <div id="catButtons" title="Tatlı Kedi">🐱</div>
+  <div id="errorMsg"></div>
+</div>
 
-    const canvas = document.getElementById('c');
-    const ctx = canvas.getContext('2d');
-    let canvasWidth = canvas.width = window.innerWidth;
-    let canvasHeight = canvas.height = window.innerHeight;
+<button id="toggle-fullscreen">Tam Ekran</button>
 
-    let trails = [];
-    let heartPath = [];
-    let mouseX = canvasWidth / 2;
-    let mouseY = canvasHeight / 2;
-    let mouseActive = false;
-    let animationRunning = true;
+<canvas id="c"></canvas>
 
-    function initHeartPath() {
-      heartPath = [];
-      const PI2 = 6.28318;
-      const steps = Math.max(32, config.particleCount);
+<div id="compliment"></div>
 
-      for (let i = 0; i < steps; i++) {
-        const t = (i / steps) * PI2;
-        heartPath.push([
-          canvasWidth / 2 + 180 * Math.pow(Math.sin(t), 3),
-          canvasHeight / 2 + 10 * (-(15 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)))
-        ]);
-      }
-    }
+<script>
+// Şifre
+const correctPassword = "irem";
 
-    // Kırmızı ve pembe neon tonları karışık renk dizisi
-    function getNeonColor() {
-      const neonColors = [
-        // Kırmızı tonları
-        'hsla(0, 100%, 70%, 0.8)',   // parlak kırmızı
-        'hsla(0, 100%, 60%, 0.7)',   // koyu kırmızı
-        'hsla(10, 100%, 65%, 0.75)', // turuncuya yakın kırmızı
-        'hsla(350, 100%, 75%, 0.7)',  // pembe-kırmızı ton
+// DOM elemanları
+const passwordScreen = document.getElementById('passwordScreen');
+const passwordInput = document.getElementById('passwordInput');
+const errorMsg = document.getElementById('errorMsg');
+const catButton = document.getElementById('catButtons');
+const toggleFullscreenBtn = document.getElementById('toggle-fullscreen');
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const complimentDiv = document.getElementById('compliment');
 
-        // Pembe tonları
-        'hsla(300, 100%, 65%, 0.7)',  // neon pembe
-        'hsla(315, 100%, 70%, 0.7)',  // fuşya
-        'hsla(285, 100%, 60%, 0.7)',  // morumsu pembe
-        'hsla(295, 100%, 75%, 0.7)'   // pembe-mor geçiş
-      ];
-      return neonColors[Math.floor(Math.random() * neonColors.length)];
-    }
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
 
-    function initParticles() {
-      trails = [];
-      if (heartPath.length === 0) initHeartPath();
+// Kalp animasyon ayarları
+const config = {
+  particleCount: 25,
+  speed: 2.5,
+  mouseInfluence: 100,
+  particleSize: 3,
+  glow: 20
+};
 
-      for (let i = 0; i < config.particleCount; i++) {
-        const particles = [];
-        const x = Math.random() * canvasWidth;
-        const y = Math.random() * canvasHeight;
+let trails = [];
+let heartPath = [];
+let mouseX = width/2;
+let mouseY = height/2;
+let mouseActive = false;
+let animationRunning = false;
 
-        for (let k = 0; k < config.particleCount; k++) {
-          particles.push({
-            x, y,
-            velX: 0, velY: 0,
-            radius: ((1 - k / config.particleCount) + 1) * config.particleSize / 2,
-            speed: Math.random() + 1,
-            targetIndex: Math.floor(Math.random() * heartPath.length),
-            direction: i % 2 * 2 - 1,
-            friction: Math.random() * 0.2 + 0.7,
-            color: getNeonColor()
-          });
-        }
-        trails.push(particles);
-      }
-    }
+// İltifat listesi
+const compliments = [
+  "Sen harikasın!",
+  "Gülüşün dünyayı aydınlatıyor.",
+  "Seninle her şey daha güzel.",
+  "Kalbinin güzelliği her şeyi büyülüyor.",
+  "Seni tanımak bir ayrıcalık.",
+  "Her zaman en iyisini hak ediyorsun.",
+  "Sen gerçek bir ilham kaynağısın.",
+  "Işığın hiç sönmesin.",
+  "Seninle zaman geçirmek çok keyifli.",
+  "Dünyanın en tatlı kalbine sahipsin.",
+   "Sen harikasın!",
+  "Gülüşün dünyayı aydınlatıyor.",
+  "Seninle her şey daha güzel.",
+  "Kalbinin güzelliği her şeyi büyülüyor.",
+  "Seni tanımak bir ayrıcalık.",
+  "Her zaman en iyisini hak ediyorsun.",
+  "Sen gerçek bir ilham kaynağısın.",
+  "Işığın hiç sönmesin.",
+  "Seninle her an anlam kazanıyor.",
+  "Pozitif enerjin etrafı sarıyor.",
+  "Seninle zaman geçirmek çok keyifli.",
+  "Hayat seninle daha renkli.",
+  "Sen güçlü ve cesursun.",
+  "Içtenliğin herkese örnek oluyor.",
+  "Sıcacık kalbinle huzur veriyorsun.",
+  "Yardımseverliğin takdire şayan.",
+  "Senin varlığın büyük bir hediye.",
+  "Neşen bulaşıcı ve muhteşem.",
+  "Gözlerin içindeki ışıltı büyülüyor.",
+  "Sen herkesin kalbinde özel bir yerdesin.",
+  "Samimiyetin yürekten geliyor.",
+  "Dostluğun paha biçilemez.",
+  "Her zaman güvenilir bir dostsun.",
+  "Seninle hayat daha güzel.",
+  "Enerjinle etrafını aydınlatıyorsun.",
+  "Seni tanımak mutluluk veriyor.",
+  "İyi ki varsın.",
+  "Kalbin kadar güzelsin.",
+  "İçindeki güç seni zirveye taşır.",
+  "Sen umut dolusun.",
+  "Hayallerin gerçek olsun.",
+  "Sıcakkanlılığın insanları sarıyor.",
+  "Sen hayatın ışığısın.",
+  "Her zaman en güzelini hak ediyorsun.",
+  "Yüreğin sevgiyle dolu.",
+  "Sen harika bir insansın.",
+  "Duruşunla ilham veriyorsun.",
+  "Seninle gurur duyuyorum.",
+  "Sözlerin yumuşak ve etkileyici.",
+  "Seninle konuşmak huzur veriyor.",
+  "Sen gerçek bir dostsun.",
+  "Neşenle etrafına mutluluk saçıyorsun.",
+  "Sen özel ve eşsizsin.",
+  "Güçlü duruşunla örnek oluyorsun.",
+  "İçten gülüşün her şeyi güzelleştiriyor.",
+  "Seninle her şey mümkün.",
+  "Senin varlığın hayatı renklendiriyor.",
+  "Seninle olmak güzel bir his.",
+  "Hayatın seni seviyor.",
+  "Pozitifliğinle fark yaratıyorsun.",
+  "Seninle her an daha değerli.",
+  "Yolun açık olsun.",
+  "Sevginle dünyayı değiştiriyorsun.",
+  "Sen insanları mutlu ediyorsun.",
+  "Her zaman parlamaya devam et.",
+  "İyiliğin insanlara umut veriyor.",
+  "Sen kalpleri fethediyorsun.",
+  "Sıcakkanlılığın büyüleyici.",
+  "Seninle hayat çok daha anlamlı.",
+  "Sevgin her şeyi güzelleştiriyor.",
+  "İyi ki seni tanıyorum.",
+  "Seninle dost olmak ayrıcalık.",
+  "Kalbin çok büyük ve güzel.",
+  "Senin enerjin ilham verici.",
+  "Seninle her şey daha kolay.",
+  "Gülüşün hayatı aydınlatıyor.",
+  "Sen gerçek bir kahramansın.",
+  "Her zaman yanındayım.",
+  "Sen her şeyi başarabilirsin.",
+  "Güzelliğin içten geliyor.",
+  "Seninle sohbet etmek keyifli.",
+  "Sen bir ışık kaynağısın.",
+  "Yüreğin sevgiyle dolup taşıyor.",
+  "Senin gibi biri nadirdir.",
+  "Hayat seninle daha güzel.",
+  "İçindeki güç seni özel kılıyor.",
+  "Seninle zaman geçirmek bir zevk.",
+  "Sen her zaman en iyisini hak ediyorsun.",
+  "Kalbinle dünyayı değiştiriyorsun.",
+  "Sıcakkanlılığın insanlara umut veriyor.",
+  "Seninle her şey mümkün.",
+  "Gözlerin ışıldıyor.",
+  "Seninle dost olmak harika.",
+  "Enerjin pozitif ve güçlü.",
+  "Sen çok değerlisin.",
+  "Gülüşün dünyaya neşe katıyor.",
+  "Sen iyiliğin simgesisin.",
+  "Yolun her daim açık olsun.",
+  "Sen gerçek bir ilham perisin.",
+  "Kalbin sonsuz bir sevgiyle dolu.",
+  "Seninle olmak huzur veriyor.",
+  "Her zaman parlamaya devam et.",
+  "Seni tanımak hayatıma anlam kattı.",
+  "Sen çok özel ve eşsizsin.",
+  "Seninle her şey daha kolay.",
+  "İyiliğin kalpleri ısıtıyor.",
+  "Seninle olmak büyük mutluluk.",
+  "Senin enerjin hayat veriyor.",
+  "Gülüşün her şeyi güzelleştiriyor.",
+  "Sen sevgiyle dolusun.",
+  "Yüreğin her zaman sıcak.",
+  "Sen gerçek bir dostsun.",
+  "Hayat seninle daha anlamlı.",
+  "Sen harika bir insansın.",
+  "Sıcakkanlılığın muhteşem.",
+  "Seninle sohbet etmek huzur veriyor.",
+  "Senin varlığın büyük bir hediye.",
+  "Kalbin güzel ve temiz.",
+  "Sen sevgi saçıyorsun.",
+  "Seninle zaman geçirmek keyifli.",
+  "Her zaman yanındayım.",
+  "Sen güçlüsün ve cesursun.",
+  "İçtenliğin her şeyi güzelleştiriyor.",
+  "Seninle olmak güzel bir his.",
+  "Seninle dost olmak ayrıcalık.",
+  "Gözlerin içindeki ışıltı büyülüyor.",
+  "Sen pozitif bir enerji kaynağısın.",
+  "Kalbinle dünyayı aydınlatıyorsun.",
+  "Seninle her an anlam kazanıyor.",
+  "Seni tanımak büyük mutluluk.",
+  "Sen gerçek bir kahramansın.",
+  "Gülüşün etrafını sarıyor.",
+  "Sen her şeyi başarabilirsin.",
+  "İyi ki varsın.",
+  "Sen çok değerlisin.",
+  "Sıcakkanlılığın herkese örnek.",
+  "Seninle hayat daha güzel.",
+  "Kalbin sevgi dolu.",
+  "Sen harika bir insansın.",
+  "Enerjin pozitif ve etkileyici.",
+  "Seninle konuşmak çok keyifli.",
+  "Seninle olmak huzur veriyor.",
+  "Sen gerçek bir ilham kaynağısın.",
+  "Her zaman en iyisini hak ediyorsun.",
+  "Seninle zaman geçirmek mutluluk.",
+  "Seni tanımak bir ayrıcalık.",
+  "Kalbinin güzelliği herkesi büyülüyor.",
+  "Seninle her şey daha güzel.",
+  "Gülüşün dünyayı aydınlatıyor.",
+  "Sen harikasın!",
+  "Pozitifliğinle etrafı sarıyorsun.",
+  "Sen içten ve samimisin.",
+  "Sen güçlü ve azimlisin.",
+  "Seninle her şey mümkün.",
+  "Seni tanımak mutluluk veriyor.",
+  "Sen sevgi dolu bir insansın.",
+  "Kalbinle insanlara dokunuyorsun.",
+  "Sen her zaman parlamaya devam et.",
+  "İyi ki hayatımdasın.",
+  "Sen bir ışık kaynağısın.",
+  "Seninle her an daha değerli.",
+  "Sen hayatın neşesisin.",
+  "Sen gerçek bir dostsun.",
+  "Gülüşün ruhumu ısıtıyor.",
+  "Seninle olmak harika bir his.",
+  "Sen pozitif enerjinle fark yaratıyorsun.",
+  "Sen harika bir insansın.",
+  "Seninle zaman geçirmek mutluluk.",
+  "Kalbin çok büyük ve güzel.",
+  "Sen her zaman sevgiyle dolusun.",
+  "Seninle konuşmak huzur veriyor.",
+  "Sen gerçek bir kahramansın.",
+  "Gözlerin ışıldıyor.",
+  "Seninle olmak güzel bir his.",
+  "Senin enerjin insanları etkiliyor.",
+  "Sen pozitif ve güçlü birisin.",
+  "Seninle hayat daha güzel.",
+  "Sen her zaman yanımdasın.",
+  "Sıcakkanlılığın herkese örnek.",
+  "Sen gerçek bir ilham perisin.",
+  "Seninle dost olmak ayrıcalık.",
+  "Kalbin sevgiyle dolu.",
+  "Seninle her an anlam kazanıyor.",
+  "Sen her zaman parlamaya devam et.",
+  "Sen güçlüsün ve cesursun.",
+  "Gülüşün dünyayı aydınlatıyor.",
+  "Sen harikasın!",
+  "Seninle hayat daha güzel.",
+  "Sen gerçek bir dostsun.",
+  "Seninle her şey mümkün.",
+  "Kalbinin güzelliği herkesi büyülüyor.",
+  "Sen pozitif bir enerji kaynağısın.",
+  "Seninle zaman geçirmek mutluluk.",
+  "Sen harika bir insansın.",
+  "Seninle olmak huzur veriyor.",
+  "Sen gerçek bir ilham kaynağısın.",
+  "Seninle konuşmak keyifli.",
+  "Senin varlığın büyük bir hediye.",
+  "Sen içten ve samimisin.",
+  "Sen güçlüsün ve azimlisin.",
+  "Seninle hayat daha güzel.",
+  "Gülüşün dünyayı aydınlatıyor.",
+  "Sen harikasın!"
+];
 
-    function renderParticle(particle) {
-      ctx.shadowColor = particle.color;
-      ctx.shadowBlur = 15;
-      ctx.fillStyle = particle.color;
-      ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      ctx.fill();
-    }
+// Kalp yolu hesapla
+function initHeartPath() {
+  heartPath = [];
+  const steps = Math.max(50, config.particleCount * 2);
+  for (let i=0; i<steps; i++) {
+    const t = (i / steps) * Math.PI * 2;
+    const x = width/2 + 180 * Math.pow(Math.sin(t), 3);
+    const y = height/2 + 10 * (-15 * Math.cos(t) + 5 * Math.cos(2*t) + 2 * Math.cos(3*t) + Math.cos(4*t));
+    heartPath.push([x, y]);
+  }
+}
 
-    function animationLoop() {
-      if (!animationRunning) return;
+// Renk seçimi
+function getNeonColor() {
+  const colors = [
+    'hsla(340, 60%, 80%, 0.9)', // Soft Pembe
+    'hsla(270, 50%, 80%, 0.9)', // Soft Lila
+    'hsla(50, 70%, 80%, 0.9)'   // Soft Sarı
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
 
-      ctx.fillStyle = "rgba(0, 0, 0, 1)";
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-      trails.forEach(trail => {
-        if (!trail || !trail.length) return;
-        const leader = trail[0];
-        const target = heartPath[leader.targetIndex % heartPath.length];
-        if (!target) return;
-
-        if (mouseActive && config.mouseInfluence > 0) {
-          const dx = mouseX - leader.x;
-          const dy = mouseY - leader.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 300) {
-            const force = (1 - dist / 300) * (config.mouseInfluence / 20);
-            leader.velX += dx / dist * force;
-            leader.velY += dy / dist * force;
-          }
-        }
-
-        const dx = leader.x - target[0];
-        const dy = leader.y - target[1];
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 10) {
-          if (Math.random() > 0.95) {
-            leader.targetIndex = Math.floor(Math.random() * heartPath.length);
-          } else {
-            if (Math.random() > 0.99) leader.direction *= -1;
-            leader.targetIndex += leader.direction;
-            leader.targetIndex = (leader.targetIndex + heartPath.length) % heartPath.length;
-          }
-        }
-
-        leader.velX += -dx / dist * leader.speed * config.speed;
-        leader.velY += -dy / dist * leader.speed * config.speed;
-        leader.x += leader.velX;
-        leader.y += leader.velY;
-        leader.velX *= leader.friction;
-        leader.velY *= leader.friction;
-
-        renderParticle(leader);
-        for (let k = 1; k < trail.length; k++) {
-          trail[k].x -= (trail[k].x - trail[k - 1].x) * 0.7;
-          trail[k].y -= (trail[k].y - trail[k - 1].y) * 0.7;
-          renderParticle(trail[k]);
-        }
+// Partikülleri başlat
+function initParticles() {
+  trails = [];
+  if (heartPath.length === 0) initHeartPath();
+  for (let i=0; i<config.particleCount; i++) {
+    const particles = [];
+    const x = Math.random() * width;
+    const y = Math.random() * height;
+    for (let k=0; k<config.particleCount; k++) {
+      particles.push({
+        x,
+        y,
+        velX: 0,
+        velY: 0,
+        radius: ((1 - k / config.particleCount) + 1) * config.particleSize,
+        speed: Math.random() + 1,
+        targetIndex: Math.floor(Math.random() * heartPath.length),
+        direction: Math.random() > 0.5 ? 1 : -1,
+        friction: Math.random() * 0.2 + 0.7,
+        color: getNeonColor()
       });
-
-      requestAnimationFrame(animationLoop);
     }
+    trails.push(particles);
+  }
+}
 
-    document.getElementById('toggle-fullscreen').addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
+// Partikül çizimi
+function renderParticle(p) {
+  ctx.shadowColor = p.color;
+  ctx.shadowBlur = config.glow;
+  ctx.fillStyle = p.color;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+  ctx.fill();
+}
+
+// Animasyon güncellemesi
+function update() {
+  ctx.fillStyle = "rgba(0,0,0,1)";
+  ctx.fillRect(0, 0, width, height);
+  for (let trail of trails) {
+    if (!trail || !trail.length) continue;
+    const leader = trail[0];
+    const target = heartPath[leader.targetIndex % heartPath.length];
+
+    if (mouseActive && config.mouseInfluence > 0) {
+      const dx = mouseX - leader.x;
+      const dy = mouseY - leader.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 300) {
+        const force = (1 - dist/300) * (config.mouseInfluence/20);
+        leader.velX += (dx / dist) * force;
+        leader.velY += (dy / dist) * force;
       }
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      mouseActive = true;
-    });
-    document.addEventListener('mouseleave', () => mouseActive = false);
-
-    window.addEventListener('resize', () => {
-      canvasWidth = canvas.width = window.innerWidth;
-      canvasHeight = canvas.height = window.innerHeight;
-      initHeartPath();
-    });
-
-    function init() {
-      initHeartPath();
-      initParticles();
-      animationLoop();
     }
 
-    init();
-  </script>
+    const dx = leader.x - target[0];
+    const dy = leader.y - target[1];
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 10) {
+      if (Math.random() > 0.95) {
+        leader.targetIndex = Math.floor(Math.random() * heartPath.length);
+      } else {
+        if (Math.random() > 0.99) leader.direction *= -1;
+        leader.targetIndex += leader.direction;
+        leader.targetIndex = (leader.targetIndex + heartPath.length) % heartPath.length;
+      }
+    }
+
+    leader.velX += -dx / dist * leader.speed * config.speed;
+    leader.velY += -dy / dist * leader.speed * config.speed;
+    leader.x += leader.velX;
+    leader.y += leader.velY;
+    leader.velX *= leader.friction;
+    leader.velY *= leader.friction;
+
+    renderParticle(leader);
+
+    for (let k=1; k<trail.length; k++) {
+      trail[k].x -= (trail[k].x - trail[k-1].x) * 0.7;
+      trail[k].y -= (trail[k].y - trail[k-1].y) * 0.7;
+      renderParticle(trail[k]);
+    }
+  }
+  if(animationRunning) requestAnimationFrame(update);
+}
+
+// İltifatları sırayla göster
+let complimentIndex = 0;
+function showCompliment() {
+  complimentDiv.textContent = compliments[complimentIndex];
+  complimentIndex = (complimentIndex + 1) % compliments.length;
+}
+
+// Şifre kontrolü
+function checkPassword() {
+  const val = passwordInput.value.trim();
+  if(val === correctPassword) {
+    errorMsg.textContent = "";
+    passwordScreen.style.display = "none";
+    canvas.style.display = "block";
+    toggleFullscreenBtn.style.display = "block";
+    complimentDiv.style.display = "block";
+    startAnimation();
+    showCompliment();
+    setInterval(showCompliment, 75);
+  } else {
+    errorMsg.textContent = "Yanlış şifre! Tekrar deneyin.";
+  }
+}
+
+// Animasyonu başlat
+function startAnimation() {
+  animationRunning = true;
+  initHeartPath();
+  initParticles();
+  update();
+}
+
+// Giriş için tuş dinleyici (Enter tuşu ile)
+passwordInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') checkPassword();
+});
+
+// Kedi butonuna tıklayınca şifre kontrolü
+catButton.addEventListener('click', checkPassword);
+
+// Fare hareketi
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  mouseActive = true;
+});
+document.addEventListener('mouseleave', () => mouseActive = false);
+
+// Tam ekran butonu
+toggleFullscreenBtn.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+// Pencere yeniden boyutlandığında
+window.addEventListener('resize', () => {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+  if(animationRunning) {
+    initHeartPath();
+  }
+});
+
+</script>
+
 </body>
 </html>
