@@ -2,140 +2,298 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<title>Mesai Takip</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YuireOS Mesai Takip</title>
 <style>
   body {
-    background: #22232a;
-    color: #e5e7eb;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    margin: 0; padding: 20px;
-    min-height: 100vh;
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #606060, #013220);
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
   }
-  h1 {
-    color: #2563eb;
+
+  #girisForm {
+    width: 400px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+  }
+
+  #mesaiTakip {
+    display: none;
+    width: 400px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
   }
-  #btnDeleteToday {
-    background: #e24343;
-    color: white;
+
+  h1 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff;
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
     border: none;
-    padding: 10px 18px;
-    border-radius: 10px;
+    border-radius: 8px;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 2px 8px #e2434322;
-    margin: 10px auto;
-    display: block;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
   }
-  #btnDeleteToday:hover {
-    background: #b91c1c;
+
+  #loginBtn {
+    background-color: #28a745;
+    color: #fff;
   }
-  /* Diğer stil ve tema aynen kalacak... */
+
+  #loginBtn:hover {
+    background-color: #444;
+  }
+
+  #mesaiTakip h2 {
+    color: #fff;
+  }
+
+  /* Mesai giriş çıkış butonları */
+  .mesai-btn {
+    width: 45%;
+    margin: 2.5%;
+    padding: 10px 0;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #4CAF50; /* Uyumlu yeşil renk */
+    color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  }
+
+  .mesai-btn:hover {
+    box-shadow: 0 0 15px #4CAF50; /* Hoverda parlayan efekt */
+    background-color: #45a049; /* Daha koyu yeşil */
+  }
+
+  #kayitlar {
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(255,255,255,0.2);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: left;
+  }
+
+  #kayitlar h3 {
+    margin-top: 0;
+    color: #fff;
+  }
+
+  #kayıtListesi {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #kayıtListesi li {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+  }
+
+  /* Sağ alta admin butonu başlangıçta gizli ve boyutu küçük */
+  #adminButton {
+    display: none; /* başlangıçta gizli */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 8px 12px; /* Küçük padding */
+    background-color: #ff5722;
+    color: #fff;
+    border: none;
+    border-radius: 6px; /* Hafif yuvarlak köşe */
+    cursor: pointer;
+    font-size: 0.9em; /* Küçük font */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 20;
+  }
+
+  #adminButton:hover {
+    background-color: #e64a19;
+    box-shadow: 0 0 10px #e64a19; /* Parlama efekti */
+  }
 </style>
 </head>
 <body>
+<div id="girisForm">
+  <h1>YuireOS</h1>
+  <input type="password" placeholder="Şifrenizi Giriniz" id="passwordInput" />
+  <button id="loginBtn">Giriş Yap</button>
+</div>
 
-<h1>Mesai Takip</h1>
+<div id="mesaiTakip">
+  <h2>Mesai Takip Sistemi</h2>
+  <input type="text" id="isimInput" placeholder="İsim/Soyisim" />
+  <div style="display:flex; justify-content: space-around; flex-wrap: wrap;">
+    <button class="mesai-btn" id="girisSaat">Giriş</button>
+    <button class="mesai-btn" id="cikisSaat">Çıkış</button>
+  </div>
+  <div>
+    <p>Giriş Zamanı: <span id="girisZaman">-</span></p>
+    <p>Çıkış Zamanı: <span id="cikisZaman">-</span></p>
+    <p>Seçilen Gün Toplam Çalışma Süresi: <span id="toplamSure">0 saat 0 dakika</span></p>
+  </div>
+  <div id="kayitlar">
+    <h3>Kayıtlar</h3>
+    <ul id="kayıtListesi"></ul>
+  </div>
+</div>
 
-<button id="btnDeleteToday">Bugünkü Kayıtları Sil (Şifre: nrusplus)</button>
-
-<div id="mesaiList"></div>
+<!-- Sağ alta admin butonu başlangıçta gizli -->
+<button id="adminButton">Admin Menüsü</button>
 
 <script>
-  const STORAGE_USER_KEY = 'mesai_kayitlari_user'; // Kullanıcı kayıtları (indexte gösterilen)
-  const STORAGE_ADMIN_KEY = 'mesai_kayitlari_admin'; // Admin kayıtları (admin paneldeki kayıtlar)
-
-  // Mesai kayıtlarını kullanıcı tarafında sakla ve göster
-  function loadUserRecords() {
-    const kayitlar = JSON.parse(localStorage.getItem(STORAGE_USER_KEY)) || [];
-    const container = document.getElementById('mesaiList');
-    if(kayitlar.length === 0){
-      container.innerHTML = '<p>Kayıt bulunamadı.</p>';
-      return;
+  // Giriş yap fonksiyonu
+  document.getElementById('loginBtn').onclick = () => {
+    const password = document.getElementById('passwordInput').value;
+    if (password === '1234') {
+      document.getElementById('girisForm').style.display = 'none';
+      document.getElementById('mesaiTakip').style.display = 'block';
+      // Admin butonunu göster
+      document.getElementById('adminButton').style.display = 'block';
+    } else {
+      alert('Yanlış şifre!');
+      document.getElementById('passwordInput').value = '';
     }
+  };
 
-    let html = '<table border="1" style="width:100%; border-collapse: collapse; color:#e5e7eb; background:#2c2d34; text-align:left;">';
-    html += '<thead><tr><th>İsim</th><th>Tip</th><th>Tarih</th><th>Saat</th><th>Çalışma Süresi</th></tr></thead><tbody>';
+  const kayıtlar = {};
+  let aktifKayıt = null;
+  let secilenTarih = null;
 
-    // Süre hesaplama için giriş-çıkış çiftlerini bulmamız lazım.
-    // Basitçe aynı isim ve tarih için giriş-çıkış var mı eşleştir.
-    // Önce kayıtları isim+tarih bazında grupla:
-    const grup = {};
-
-    kayitlar.forEach(k => {
-      const key = k.isim + '_' + k.tarih;
-      if (!grup[key]) grup[key] = { giris: null, cikis: null, saatGiris: '', saatCikis: '' };
-      if (k.tip === 'giriş') {
-        grup[key].giris = k;
-        grup[key].saatGiris = k.saat;
-      } else if (k.tip === 'çıkış') {
-        grup[key].cikis = k;
-        grup[key].saatCikis = k.saat;
-      }
-    });
-
-    // Şimdi kayıtları listelerken süreyi hesapla:
-    kayitlar.forEach(k => {
-      const key = k.isim + '_' + k.tarih;
-      const grupKayit = grup[key];
-
-      // Süre hesaplama
-      let sure = '';
-      if(grupKayit && grupKayit.giris && grupKayit.cikis){
-        // Saatleri Date objesine çevirelim
-        const [gH, gM] = grupKayit.saatGiris.split(':').map(Number);
-        const [cH, cM] = grupKayit.saatCikis.split(':').map(Number);
-        const girisDate = new Date(0,0,0,gH,gM);
-        const cikisDate = new Date(0,0,0,cH,cM);
-
-        let diff = (cikisDate - girisDate) / 60000; // dakika cinsinden fark
-        if(diff < 0) diff = 0; // negatif olmasın
-        const saat = Math.floor(diff / 60);
-        const dakika = diff % 60;
-        sure = `${saat} saat ${dakika} dakika`;
-      }
-
-      html += `<tr>
-        <td>${k.isim}</td>
-        <td>${k.tip === 'giriş' ? 'Giriş' : 'Çıkış'}</td>
-        <td>${k.tarih}</td>
-        <td>${k.saat}</td>
-        <td>${sure}</td>
-      </tr>`;
-    });
-
-    html += '</tbody></table>';
-    container.innerHTML = html;
+  function getGünKey(zaman) {
+    const y = zaman.getFullYear();
+    const m = (zaman.getMonth() + 1).toString().padStart(2, '0');
+    const d = zaman.getDate().toString().padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
-  // Butonla bugünün kayıtlarını silme (şifre korumalı)
-  document.getElementById('btnDeleteToday').addEventListener('click', () => {
-    const sifre = prompt('Şifreyi girin:');
-    if (sifre !== 'nrusplus') {
-      alert('Şifre yanlış!');
+  function hesaplaGünToplam(tarihKey) {
+    let toplam = 0;
+    if (kayıtlar[tarihKey]) {
+      for (const kayit of kayıtlar[tarihKey]) {
+        if (kayit.cikisZamani) {
+          const fark = Math.floor((kayit.cikisZamani - kayit.girisZamani) / 60000);
+          toplam += fark;
+        }
+      }
+    }
+    return toplam;
+  }
+
+  function güncelleToplamSüre(tarihKey) {
+    const toplamDakika = hesaplaGünToplam(tarihKey);
+    const saat = Math.floor(toplamDakika / 60);
+    const dakika = toplamDakika % 60;
+    document.getElementById('toplamSure').textContent = `${saat} saat ${dakika} dakika`;
+  }
+
+  document.getElementById('girisSaat').onclick = () => {
+    const isimInput = document.getElementById('isimInput').value.trim();
+    if (!isimInput) {
+      alert('Lütfen isim/Soyisim giriniz.');
       return;
     }
-    const bugun = new Date();
-    const gun = bugun.getDate().toString().padStart(2,'0');
-    const ay = (bugun.getMonth()+1).toString().padStart(2,'0');
-    const yil = bugun.getFullYear();
-    const bugunStr = `${gun}.${ay}.${yil}`;
+    const zaman = new Date();
+    const günKey = getGünKey(zaman);
+    secilenTarih = günKey;
 
-    let kayitlar = JSON.parse(localStorage.getItem(STORAGE_USER_KEY)) || [];
-    // Bugünün kayıtlarını filtrele (silmek için bugünün dışındakileri al)
-    kayitlar = kayitlar.filter(k => k.tarih !== bugunStr);
+    if (!kayıtlar[günKey]) {
+      kayıtlar[günKey] = [];
+    }
+    aktifKayıt = {
+      girisZamani: zaman,
+      cikisZamani: null
+    };
+    kayıtlar[günKey].push(aktifKayıt);
+    document.getElementById('girisZaman').textContent = zaman.toLocaleString();
+    document.getElementById('cikisZaman').textContent = '-';
 
-    localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(kayitlar));
-    alert('Bugünkü kayıtlar silindi.');
-    loadUserRecords();
-  });
+    addKayıt(`${isimInput} Giriş`, zaman);
+  };
 
-  // Sayfa yüklendiğinde kullanıcı kayıtlarını göster
-  window.onload = () => {
-    loadUserRecords();
+  document.getElementById('cikisSaat').onclick = () => {
+    if (!aktifKayıt) {
+      alert('Lütfen önce giriş yapınız.');
+      return;
+    }
+    const zaman = new Date();
+    aktifKayıt.cikisZamani = zaman;
+
+    const günKey = getGünKey(aktifKayıt.girisZamani);
+    güncelleToplamSüre(günKey);
+
+    document.getElementById('cikisZaman').textContent = zaman.toLocaleString();
+
+    addKayıt(`${isimInput} Çıkış`, zaman, Math.floor((zaman - aktifKayıt.girisZamani) / 60000));
+
+    aktifKayıt = null;
+  };
+
+  function addKayıt(metin, zaman, sureDakika = null) {
+    const li = document.createElement('li');
+    const zamanStr = zaman ? zaman.toLocaleString() : '';
+    const sureStr = sureDakika !== null ? ` - Süre: ${formatSure(sureDakika)}` : '';
+    li.textContent = `${metin} | Tarih: ${zamanStr}${sureStr}`;
+    document.getElementById('kayıtListesi').appendChild(li);
+  }
+
+  function formatSure(dakika) {
+    const saat = Math.floor(dakika / 60);
+    const kalanDakika = dakika % 60;
+    return `${saat} saat ${kalanDakika} dakika`;
+  }
+
+  // Admin butonuna tıklandığında
+  document.getElementById('adminButton').onclick = () => {
+    alert('Admin menüsü burada geliştirilebilir.');
   };
 </script>
-
 </body>
 </html>
